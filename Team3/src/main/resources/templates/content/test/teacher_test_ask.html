@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드작성 -->
+    <style>
+        .trLine, th {border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse; font-size: 16px; border-top: 3px solid rgba(22, 121, 55, 0.438); border-bottom: 3px solid rgba(22, 121, 55, 0.438);}
+        th{--bs-table-bg:  #36ad6442; text-align: center; }
+
+    </style>
+
+
+    <div class="row">
+        <div class="col">
+
+            <div class="row mb-4">
+                <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                    <h3><strong>성적 이의신청 처리</strong></h3>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col">
+                    <table style=" width: 900px; border: 2px solid rgb(156, 156, 156); background-color: rgb(247, 245, 245);">
+                        <tr><td>&nbsp;-부적절한 이의신청은 부정 청탁 및 금풍 등 수수의 금지에 관한 법률에 조촉되므로 불이익 처분을 받지 유의합니다.</td></tr>
+                        <tr><td>&nbsp;-이의신청게시판 외 등록된 이의신청 내용은 반영하지 않습니다.</td></tr>
+                        <tr><td>&nbsp;-단순히 성적을 올리기 위한 호소글은 성적 조정에 반영하지 않습니다.</td></tr>
+                        <tr><td>&nbsp;-교.강사에 대한 인격모독, 비방글은 사전 공지 없이 삭제할 수 있습니다.</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="width: 1000px;">
+                <div class="col">
+                    <table class="table" style="text-align: center;">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="30%">
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="15%">
+                            <col width="15%">
+                        </colgroup>
+                        <tr class="trLine">
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>신청자</th>
+                            <th>시험명</th>
+                            <th>수강명</th>
+                            <th>작성일</th>
+                        </tr>
+                        <tr class="trLine" th:each=" thTestAsk : ${thTestAskList}">
+                            <td class="trLine" style="text-align: center;">[[${thTestAsk.protestNum}]]</td> 
+                            
+                            <th:block th:if="${thTestAsk.protestGroupno!=0}"> 
+                                <td class="trLine"> <strong style="color: red;">
+                                    &nbsp; &nbsp; &nbsp;
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-90deg-up" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M4.854 1.146a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L4 2.707V12.5A2.5 2.5 0 0 0 6.5 15h8a.5.5 0 0 0 0-1h-8A1.5 1.5 0 0 1 5 12.5V2.707l3.146 3.147a.5.5 0 1 0 .708-.708z"/>
+                                        </svg>
+                                    RE:</strong><span style="cursor: pointer;" th:onclick="goDetail([[${thTestAsk.protestNum}]],[[${thTestAsk.teacherId}]])">[[${thTestAsk.protestTitle}]]</span></td>
+                            </th:block>
+                            <th:block th:if="${thTestAsk.protestGroupno==0}">
+                                <td class="trLine" style="text-align: start;"><span style="cursor: pointer;" th:onclick="goDetail([[${thTestAsk.protestNum}]],[[${thTestAsk.teacherId}]])">[[${thTestAsk.protestTitle}]]</span></td>
+                            </th:block>
+
+                            <td class="trLine">[[${thTestAsk.memberN}]]</td>
+                            <td class="trLine">[[${thTestAsk.testN}]]</td>
+                            <td class="trLine">[[${thTestAsk.classN}]]</td>
+                            <td class="trLine" style="text-align: center;">[[${thTestAsk.protestDate}]]</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        
+
+        </div>
+    </div>
+
+
+<script>
+function goDetail(protestNum,memberId){
+    location.href='/stuTest/stuAskDetail?protestNum='+protestNum +'&memberId='+memberId;
+}
+
+</script>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <!-- <script src="/"></script> -->
+</th:block>
+</html>

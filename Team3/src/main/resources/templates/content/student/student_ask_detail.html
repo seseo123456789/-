@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드작성 -->
+    <style>
+        td ,th, tr{border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse; }
+        th{--bs-table-bg:  #36ad6442; text-align: center;}
+    </style>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h4><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                            <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                            </svg> 이의신청 상세내역</strong></h4>
+                    </div>
+                </div>
+
+
+
+                <form action="/stuTest/insertStuAsk" method="post">
+                    <div class="row">
+                        <div class="col">
+                                            
+                                <table class="table" style="width:800px">
+                                    <colgroup>
+                                        <col width="20%">
+                                        <col width="30%">
+                                        <col width="20%">
+                                        <col width="30%">
+                                    </colgroup>
+                                    <tr>
+                                        
+                                        <th:block th:if="${testAskOne.protestGroupno!=0}">
+                                            <th>답변자</th>
+                                            <td>[[${testAskOne.protestWriter}]] </td>
+                                        </th:block>
+
+                                        <th>신청자</th>
+                                        <td>[[${testAskOne.memberN}]] </td>
+                                    
+                                    <th:block th:if="${testAskOne.protestGroupno==0}">   
+                                        <th>아이디</th>
+                                        <td>[[${testAskOne.memberId}]]</td>
+                                    </th:block>
+                                    </tr>
+                                    <tr>
+                                        <th>수강명</th>
+                                        <td>[[${testAskOne.classN}]]</td>                                   
+                                        <th>시험명</th>
+                                        <td>[[${testAskOne.testN}]]</td>         
+                                    </tr>
+                                    <tr>
+                                                                    
+                                        <th>제목</th>
+                                        <td>[[${testAskOne.protestTitle}]]</td> 
+                                        <th>작성일</th>                      
+                                        <td>[[${testAskOne.protestDate}]]</td>                                                                          
+                                    </tr>
+                                    <tr>
+                                        <th:block th:if="${testAskOne.protestGroupno!=0}">  
+                                            <th>성적정정 <br>결과</th>
+                                        </th:block>
+                                        <th:block th:if="${testAskOne.protestGroupno==0}">  
+                                            <th>신청사유</th>
+                                        </th:block>
+                                        <td colspan="5">[[${testAskOne.protestContent}]]</td>
+                                    </tr>
+                                </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                    
+                        <div class="col">
+                            <!-- 신청글 수정 버튼(학생) -->
+                            <th:block th:if="${thTestAskList}==null and ${testAskOne.protestOrigino}==0">
+                                <input type="button" class="btn btn-primary text-end"  value="신청수정" th:onclick="goUpdate([[${testAskOne.protestNum}]])">  
+                                <input type="button" class="btn btn-primary text-end"  value="신청삭제" th:onclick="goDelete([[${testAskOne.protestNum}]])">                          
+                            </th:block>
+                            <!-- 원글의 답글버튼(선생님) -->
+                            <th:block th:if="${thTestAskList}!=null and ${testAskOne.protestGroupno}==0">
+                                    <input type="button" class="btn btn-primary" th:onclick="goComment([[${testAskOne.protestNum}]])" value="답글">
+                            
+                                <!-- 삭제 버튼(선생님) -->
+                                    <th:block th:if="${testAskOne.protestOrigino}==0">
+                                        <input type="button" class="btn btn-primary text-end"  value="삭제" th:onclick="goThDelete1([[${testAskOne.protestNum}]])">
+                                    </th:block>
+                                    <th:block th:if="${testAskOne.protestOrigino}!=0">
+                                        <input type="button" class="btn btn-primary text-end"  value="삭제" th:onclick="goThDelete2([[${testAskOne.protestOrigino}]])">
+                                    </th:block>                                                  
+                            </th:block>
+
+                            <!-- 목록 버튼(선생님) -->
+                                <input type="button" class="btn btn-primary" th:onclick="goList([[${thTestAskList}]],[[${testAskOne.protestOrigino}]])" value="목록">                              
+                        </div>
+
+
+
+                    </div>
+                </form>  
+                
+            </div>
+        </div>
+
+<script>
+// ##########################  선생님 답글페이지 이동 ########################## 
+function goComment(protestNum){
+    location.href='/test/teacherComment?protestNum=' +protestNum;
+}
+// ##########################  학생 수정페이지 이동 ########################## 
+function goUpdate(protestNum){
+    location.href='/stuTest/goUpdatePG?protestNum=' +protestNum;
+}
+
+// ##########################  학생 글 삭제 ########################## 
+function goDelete(protestNum){
+    location.href='/stuTest/goMyDelete?protestNum=' +protestNum;
+}
+// ##########################  선생님 글 삭제(1) ########################## 
+function goThDelete1(protestNum){
+    location.href='/test/goThDelete1?protestNum=' +protestNum;
+}
+// ##########################  선생님 답글 삭제(2) ########################## 
+function goThDelete2(protestOrigino){
+    location.href='/test/goThDelete2?protestOrigino=' +protestOrigino;
+}
+// ##########################  학생 / 선생님 글목록 창 이동 ########################## 
+function goList(thTestAskList,protestOrigino ){
+    if(thTestAskList==null){
+        location.href='/stuTest/stuAskFirst';
+    }
+    else{
+        location.href='/test/teacherAskFirst';
+    }
+}
+</script>
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <!-- <script src="/"></script> -->
+</th:block>
+</html>

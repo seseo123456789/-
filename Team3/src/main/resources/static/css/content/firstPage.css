@@ -1,0 +1,8 @@
+.text-over-cut {
+  display: block;
+  width: 262px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="teacher">
+    <resultMap id="teacherInfo" type="com.green.Team3.member.vo.TeacherVO">
+        <id column="TEACHER_NUM"        property="teacherNum"/>
+        <result column="TEACHER_WORK"   property="teacherWork"/>
+        <result column="MEMBER_ID"      property="memberId"/>
+        <result column="TEACHER_NAME"   property="teacherName"/>
+        <result column="STR_WORK"       property="strWork"/>
+        <association property="memberVO" resultMap="member.memberMap"/>
+    </resultMap>
+
+    <!--  선생님 전체 목록 조회  -->
+    <select id="selectTeachers" resultMap="teacherInfo">
+        SELECT M.MEMBER_ID
+            , MEMBER_NAME
+            , TEACHER_NUM
+            , TEACHER_WORK
+            , LEFT(REG_DATE, 11) REG_DATE
+            , CASE
+            WHEN TEACHER_WORK = 1 THEN '재직'
+            ELSE '퇴직'
+            END AS STR_WORK
+        FROM TEACHER T
+        INNER JOIN MEMBER M ON M.MEMBER_ID = T.MEMBER_ID
+        LIMIT ${displayDataCnt} OFFSET ${displayDataCnt * (nowPage - 1)} ;
+    </select>
+
+    <!-- 선생님 이름 검색 시 -->
+    <select id="findTeacher" resultMap="clsMapper.cls">
+        SELECT T.MEMBER_ID
+            , MEMBER_NAME
+            , T.TEACHER_NUM
+            , CLASS_NAME
+            , CLS.CLASS_NUM
+            , TEACHER_WORK
+            , (SELECT COUNT(O.MEMBER_ID)
+                FROM operator O
+                INNER JOIN MEMBER
+                ON MEMBER.MEMBER_ID = O.MEMBER_ID
+                WHERE CLASS_NUM = CLS.CLASS_NUM) AS STU_CNT
+            , CLASS_PERSONNEL
+            , CASE
+                WHEN CLASS_EDATE &gt;= NOW() THEN '강의 중'
+                ELSE '종료'
+                END AS STR_WORK
+        FROM CLASS_INFO CLS INNER JOIN TEACHER T
+        ON CLS.TEACHER_NUM = T.TEACHER_NUM
+        INNER JOIN MEMBER M
+        ON T.MEMBER_ID = M.MEMBER_ID
+        WHERE MEMBER_NAME = #{memberName}
+    </select>
+
+    <!--  선생님 상세 정보 조회  -->
+    <select id="detailTeacher" resultMap="clsMapper.cls">
+        SELECT T.MEMBER_ID
+            , MEMBER_NAME
+            , T.TEACHER_NUM
+            , CLASS_NAME
+            , CLS.CLASS_NUM
+            , TEACHER_WORK
+            , (SELECT COUNT(O.MEMBER_ID)
+                FROM operator O
+                INNER JOIN MEMBER
+                ON MEMBER.MEMBER_ID = O.MEMBER_ID
+                WHERE CLASS_NUM = CLS.CLASS_NUM) AS STU_CNT
+            , CLASS_PERSONNEL
+            , CASE
+                WHEN CLASS_EDATE &gt;= NOW() THEN '강의 중'
+                ELSE '종료'
+                END AS STR_WORK
+        FROM CLASS_INFO CLS INNER JOIN TEACHER T
+        ON CLS.TEACHER_NUM = T.TEACHER_NUM
+        INNER JOIN MEMBER M
+        ON T.MEMBER_ID = M.MEMBER_ID
+        WHERE T.TEACHER_NUM = #{teacherNum}
+        ORDER BY MEMBER_NAME DESC
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

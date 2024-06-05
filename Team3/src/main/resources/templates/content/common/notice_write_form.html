@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+<body>
+
+<th:block layout:fragment="contentFragment">
+    <!-- 공지사항 게시물 작성 폼 -->
+    <div class="row">
+        <div class="col">
+            <form action="/board/noticeWrite" method="post" enctype="multipart/form-data" id="notice_reg">
+                <input type="hidden" id="selectedTypeNum" name="selectedTypeNum">
+                <div class="row mb-3">
+                    <div class="col">
+                        제목
+                        <input id="boardTitle" type="text" name="boardTitle" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        열람 대상
+                        <div>
+                            <input id="typeNum" type="radio" name="typeNum" value="1">학생
+                            <input id="typeNum" type="radio" name="typeNum" value="2">강사
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        내용
+                        <textarea id="boardContent" name="boardContent" cols="30" rows="10" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">첨부파일 등록</label>
+                        <input class="form-control" type="file" name="subImgs" multiple>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input type="button" class="btn btn-primary" value="게시" onclick="noticeReg();">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <script src="/js/board.js"></script>
+</th:block>
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/common.css">
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<th:block layout:fragment="content_css"></th:block>
+
+</head>
+<body>
+    <!-- bootstrap 디자인을 잘 적용하기 위해선 -->
+    <!-- 반드시 container 클래스안에 모든 내용 작성 -->
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <th:block th:replace="~{fragment/integrated_header::headerFragment}"></th:block>
+            </div>
+        </div>
+        <div class="row">
+            <th:block sec:authorize="isAnonymous()">
+                <div class="col-12">
+                    <th:block layout:fragment="contentFragment"></th:block>
+                </div>
+            </th:block>
+            <th:block sec:authorize="isAuthenticated()">
+                <th:block sec:authorize="hasRole('ROLE_1')">
+                    <div class="col-2">
+                        <th:block th:replace="~{fragment/student_side_menu::StudentSideMenuFragment}"></th:block>
+                    </div>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_2')">
+                    <div class="col-2">
+                        <th:block th:replace="~{fragment/teacher_side_menu::TeacherSideMenuFragment}"></th:block>
+                    </div>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_3')">
+                    <div class="col-2">
+                        <th:block th:replace="~{fragment/admin_side::adminSideFragment}"></th:block>
+                    </div>
+                </th:block>
+                <div class="col-10">
+                    <th:block layout:fragment="contentFragment"></th:block>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <th:block sec:authorize="isAnonymous()">
+        <th:block th:if="${errorMsg != 'success'}">
+            <script src="/js/header.js"></script>             
+        </th:block>
+    </th:block>
+    <th:block th:if="${accorNum != 0 && accorNum != null}">
+        <script scr="/js/side.js"></script>
+    </th:block>
+    <th:block layout:fragment="content_js">
+        
+    </th:block>
+</body>
+</html>

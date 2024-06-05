@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+<body>
+
+<th:block layout:fragment="contentFragment">
+    <!-- 문의사항 게시물 작성 폼 -->
+    <div class="row">
+        <div class="col">
+            <form action="/board/qnaWrite" method="post" id="qna_reg">
+                <input id="typeNum" type="hidden" name="typeNum" value="3">
+                <div class="row mb-5">
+                    <div class="col">
+                        제목
+                        <input id="boardTitle" type="text" name="boardTitle" class="form-control">
+                        <input type="hidden" name="pageNum">
+                    </div>
+                </div>
+                    <div class="col">
+                        내용
+                        <textarea id="boardContent" name="boardContent" cols="30" rows="10" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col">
+                        <input type="button" class="btn btn-primary" value="게시" onclick="qnaReg();">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <script src="/js/board.js"></script>
+</th:block>
+

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="member">
+    <resultMap id="memberMap" type="com.green.Team3.member.vo.MemberVO">
+        <id     column="MEMBER_ID"      property="memberId"/>
+        <result column="MEMBER_PW"      property="memberPw"/>
+        <result column="MEMBER_NAME"    property="memberName"/>
+        <result column="MEMBER_TEL"     property="memberTel"/>
+        <result column="MEMBER_EMAIL"   property="memberEmail"/>
+        <result column="MEMBER_BIRTH"   property="memberBirth"/>
+        <result column="MEMBER_AGE"     property="memberAge"/>
+        <result column="MEMBER_GENDER"  property="memberGender"/>
+        <result column="MEMBER_ADDR"    property="memberAddr"/>
+        <result column="ADDR_DETAIL"    property="addrDetail"/>
+        <result column="POST_CODE"      property="postCode"/>
+        <result column="REG_DATE"       property="regDate"/>
+        <result column="MEMBER_ROLL"    property="memberRoll"/>
+        <result column="STR_ROLL"       property="strRoll"/>
+        <result column="check"          property="check"/>
+        <result column="absent"         property="absent"/>
+        <result column="tardy"          property="tardy"/>
+        <result column="early"          property="early"/>
+        <result column="supple"         property="supple"/>
+        <result column="CLASS_NAME"     property="className"/>
+        <collection property="operatorVOList"    resultMap="admin.operator"/>
+    </resultMap>
+
+    <resultMap id="rollType" type="com.green.Team3.member.vo.RollTypeVO">
+        <id column="MEMBER_ROLL" property="memberRoll"/>
+        <result column="ROLL_NAME" property="rollName"/>
+    </resultMap>
+
+    <select id="selectMemberName" resultType="String">
+        SELECT MEMBER_NAME
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 전체 회원 목록 조회 -->
+    <select id="selectMembers" resultMap="memberMap">
+        SELECT M.MEMBER_ID
+            , MEMBER_NAME
+            , MEMBER_BIRTH
+            , SUBSTRING(NOW(), 1, 4) - SUBSTRING(member_BIRTH, 1, 4) AS MEMBER_AGE
+            , MEMBER_ROLL
+            , LEFT(REG_DATE, 16) REG_DATE
+            , CASE
+                WHEN MEMBER_ROLL = 1 THEN '학생'
+                WHEN MEMBER_ROLL = 2 THEN '강사'
+                WHEN MEMBER_ROLL = 3 THEN '관리'
+            END AS STR_ROLL
+            , OPER_NUM
+            , IS_PAY
+        FROM MEMBER M LEFT JOIN OPERATOR O
+        ON M.MEMBER_ID = O.MEMBER_ID
+        <if test="searchType != null and !searchType.equals('')">
+            WHERE MEMBER_ROLL = ${searchType}
+        </if>
+        GROUP BY M.MEMBER_ID
+        ORDER BY MEMBER_NAME
+        LIMIT ${displayDataCnt} OFFSET ${displayDataCnt * (nowPage - 1)}
+    </select>
+
+    <!-- memberRoll 리스트 보기 -->
+    <select id="rollList" resultMap="rollType">
+        SELECT ROLL_NAME
+            , MEMBER_ROLL
+        FROM ROLL_TYPE
+        ORDER BY MEMBER_ROLL ASC
+    </select>
+
+    <!-- 선택한 회원 상세 정보 조회 (관리자용) -->
+    <select id="memberDetail" resultMap="memberMap">
+        SELECT MEMBER_ID
+            , MEMBER_NAME
+            , MEMBER_BIRTH
+            , SUBSTRING(NOW(), 1, 4) - SUBSTRING(member_BIRTH, 1, 4) AS MEMBER_AGE
+            , MEMBER_TEL
+            , MEMBER_ROLL
+            , MEMBER_ADDR
+            , ADDR_DETAIL
+            , POST_CODE
+            , MEMBER_EMAIL
+            , MEMBER_GENDER
+            , CASE
+                WHEN MEMBER_ROLL = 1 THEN '학생'
+                WHEN MEMBER_ROLL = 2 THEN '강사'
+                WHEN MEMBER_ROLL = 3 THEN '관리'
+            END AS STR_ROLL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+
+    <!-- 회원가입 -->
+    <insert id="join">
+        INSERT INTO MEMBER(
+            MEMBER_ID
+            , MEMBER_PW
+            , MEMBER_NAME
+            , MEMBER_TEL
+            , MEMBER_EMAIL
+            , MEMBER_BIRTH
+            , MEMBER_ADDR
+            , ADDR_DETAIL
+            , MEMBER_GENDER
+            , POST_CODE
+        )VALUES(
+            #{memberId}
+            , #{memberPw}
+            , #{memberName}
+            , #{memberTel}
+            , #{memberEmail}
+            , #{memberBirth}
+            , #{memberAddr}
+            , #{addrDetail}
+            , #{memberGender}
+            , #{postCode}
+        )
+    </insert>
+
+    <!-- 아이디 중복 확인 -->
+    <select id="idCheck" resultType="int">
+        SELECT COUNT(MEMBER_ID)
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 로그인 -->
+    <select id="login" resultMap="memberMap">
+        SELECT MEMBER_ID
+            , MEMBER_PW
+            , MEMBER_ROLL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!-- 카드 결제 신청 시, 결제창에 띄울 정보 검색 -->
+    <select id="requestPayInfo" resultMap="clsMapper.cls">
+        SELECT M.MEMBER_ID
+            , MEMBER_NAME
+            , MEMBER_EMAIL
+            , MEMBER_TEL
+            , MEMBER_ADDR
+            , ADDR_DETAIL
+            , POST_CODE
+            , CLASS_NAME
+            , CLASS_PAYMENT
+            , CI.CLASS_NUM
+            , OPER_NUM
+        FROM class_info CI LEFT JOIN operator O
+        ON CI.CLASS_NUM = O.CLASS_NUM
+        INNER JOIN member M
+        ON M.MEMBER_ID = O.MEMBER_ID
+        WHERE M.MEMBER_ID = #{memberId}
+        AND CI.CLASS_NUM = #{classNum}
+    </select>
+
+    <!--  아이디찾기  -->
+    <select id="findMemberId" resultType="String">
+        SELECT MEMBER_ID FROM member
+        WHERE MEMBER_NAME = #{memberName}
+        AND MEMBER_TEL = #{memberTel}
+        AND MEMBER_BIRTH = #{memberBirth}
+    </select>
+
+    <!--  멤버 이메일 조회  -->
+    <select id="getMemberEmail" resultType="String">
+        SELECT MEMBER_EMAIL FROM member
+        WHERE MEMBER_ID = #{memberId}
+        AND MEMBER_NAME = #{memberName}
+    </select>
+
+    <!--  비밀번호 변경  -->
+    <update id="updateMemberPw">
+        UPDATE MEMBER SET
+        MEMBER_PW = #{memberPw}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+
+    <!--  내정보 조회  -->
+    <select id="selectMyInformation" resultMap="memberMap">
+        SELECT
+            MEMBER_ID,
+            MEMBER_NAME,
+            MEMBER_TEL,
+            MEMBER_EMAIL,
+            MEMBER_BIRTH,
+            MEMBER_ADDR,
+            ADDR_DETAIL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!--  비밀번호 비교를 위해 비밀번호 조회  -->
+    <select id="matchPassWord" resultType="String">
+        SELECT MEMBER_PW
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberID}
+    </select>
+
+    <select id="selectMyConsult" resultMap="learnMapper.consult">
+        SELECT *
+        FROM consult C
+        INNER JOIN class_info CI
+        ON C.CLASS_NUM = CI.CLASS_NUM
+        WHERE MEMBER_ID = #{memberId}
+        AND CONSULT_DATE > NOW()
+    </select>
+    <select id="selectMyHomework" resultMap="learnMapper.homework">
+        SELECT *
+        FROM homework H
+        INNER JOIN class_info C
+        ON C.CLASS_NUM = H.CLASS_NUM
+        WHERE H.CLASS_NUM in
+            (SELECT CLASS_NUM
+            FROM operator
+            WHERE MEMBER_ID = 'STUDENT')
+        and HW_EDATE > NOW();
+    </select>
+    <select id="selectMyTest" resultMap="testMapper.testResult">
+        SELECT *
+        FROM test T
+        INNER JOIN class_info C
+        ON C.CLASS_NUM = T.CLASS_NUM
+        WHERE C.CLASS_NUM in
+            (SELECT CLASS_NUM
+            FROM operator
+            WHERE MEMBER_ID=#{memberId})
+        AND TEST_DATE >= NOW()
+        ORDER BY TEST_DATE ASC
+    </select>
+    <select id="selectMyAttendance" resultMap="memberMap">
+        SELECT c.CLASS_NAME
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 1 AND member_id = m.member_id AND CLASS_NUM = C.CLASS_NUM) 'check'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 2 AND member_id = m.member_id AND CLASS_NUM = C.CLASS_NUM) 'absent'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 3 AND member_id = m.member_id AND CLASS_NUM = C.CLASS_NUM) 'tardy'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 4 AND member_id = m.member_id AND CLASS_NUM = C.CLASS_NUM) 'early'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 5 AND member_id = m.member_id AND CLASS_NUM = C.CLASS_NUM) 'supple'
+        from member m
+        INNER JOIN operator o
+        ON m.member_id = o.MEMBER_ID
+        INNER JOIN class_info c
+        ON c.CLASS_NUM = o.CLASS_NUM
+        WHERE m.member_id = #{memberId}
+        AND c.class_num IN (SELECT class_num from operator WHERE member_id = #{memberId})
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

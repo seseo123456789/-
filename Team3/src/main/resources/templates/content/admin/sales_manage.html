@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성 -->
+    <div class="row">
+        <div class="col">
+            <div class="row mb-2">
+                <div class="col">
+                    <h2 class="title-div" >매출관리</h2>
+                </div>
+            </div>
+            <div class="row" style="height: 95%;">
+                <div class="col" >
+                    <div class="row" >
+                        <div class="offset-1 col-2" style="font-size: 20px; font-weight: bold; padding-top: 20px;">총 매출</div>
+                        <div class="col-2 money-td" style="font-size: 18px; padding-top: 20px;"></div>
+                        <div class="offset-4 col-2" style="text-align: right; padding-top: 18px;">
+                            <select name="payYear" class="form-select" onchange="eventYear()">
+                                <option th:each="year : ${years}" th:value="${year.payYear}">[[${year.payYear}]]년</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class=" row">
+                        <div class="col mt-3">
+                            <div class="row">
+                                <div class="col-9"></div>
+        
+                                <div class="col-1"></div>
+                            </div>
+                            <canvas class="bar-chart-div" >
+                                <div></div>
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/content/admin/sales_manage.js"></script>
+</th:block>
+</html>

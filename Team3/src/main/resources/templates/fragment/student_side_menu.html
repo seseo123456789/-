@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="StudentSideMenuFragment">
+      <style>
+        li{
+          line-height: 30px;
+        }
+      </style>
+
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+              학원 일정
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" th:classappend="${accorNum == 1 ? ' show' : ''}">
+            <div class="accordion-body">
+              공지사항
+              <ul>
+                <li><span class="pointer-span" onclick="location.href='/board/noticeListStu?typeNum=1&accorNum=1'">학사 공지</span></li>
+              </ul>
+              <span>문의사항</span>
+              <ul>
+                <li><span class="pointer-span" onclick="location.href='/board/qnaList?typeNum=3&typeNum=4&accorNum=1'">Q&A</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+              학급
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" th:classappend="${accorNum == 3 ? ' show' : ''}">
+            <div class="accordion-body">
+              나의 정보
+              <ul>
+                <li><a href="/member/stuInfoForm?accorNum=3">내 정보 조회</a></li>
+                <li>출결 조회</li>
+                <li>진도 / 수업율</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+              나의 성적관리
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse" th:classappend="${accorNum == 4 ? ' show' : ''}">
+            <div class="accordion-body">
+                성적
+                <ul>
+                  <li><a href="/stuTest/stuTestFirst?accorNum=4">전체 성적 조회</a></li>
+                  <li><a href="/stuTest/stuAskFirst?accorNum=4">성적 이의 신청</a> </li>
+                </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+             학생 업무
+            </button>
+          </h2>
+            <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" th:classappend="${accorNum == 5 ? ' show' : ''}">
+              <div class="accordion-body">
+                과제
+                <ul>
+                  <li>과제 목록</li>
+                </ul>
+                상담
+                <ul>
+                  <li>상담 일정 확인</li>
+                  <li>상담 신청</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+      </div>
+
+    </th:block>
+</html>

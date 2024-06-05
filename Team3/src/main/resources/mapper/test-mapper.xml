@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="testMapper">
+
+
+
+    <resultMap id="testResult" type="com.green.Team3.test.vo.TestVO">
+        <id column="TEST_NUM"                   property="testNum"/>
+        <result column="TEST_NAME"              property="testName"/>
+        <result column="TEST_DATE"              property="testDate"/>
+        <result column="TEST_MAXSCORE"          property="testMaxScore"/>
+        <result column="CLASS_NUM"              property="classNum"/>
+        <result column="SUB_CNT"                property="subCnt"/>
+        <result column="TOTAL_SUBMAX"           property="totalSubMax"/>
+        <association property="classOneVo"      resultMap="clsMapper.cls"/>
+        <collection property="studentListVO"    resultMap="admin.operator"/>
+    </resultMap>
+
+    <resultMap id="scoreResult" type="com.green.Team3.test.vo.TestScoreVO">
+        <id column="SCORE_NUM"              property="scoreNum"/>
+        <result column="SCORE"              property="score"/>
+        <result column="TEST_NUM"           property="testNum"/>
+        <result column="MEMBER_ID"          property="memberId"/>
+        <result column="RANKING"            property="ranking"/>
+        <result column="SUB_TEST_NUM"       property="subTestNum"/>
+        <result column="TEST_AVG"           property="testAvg"/>
+        <result column="SUB_AVG"           property="subAvg"/>
+        <result column="SUB_SUM_AVG"           property="subSumAvg"/>
+        <result column="SUB_SUM"           property="subSum"/>
+        <result column="CLASS_NAME"         property="className"/>
+        <result column="CLASS_NUM"         property="classNum"/>
+        <result column="LEVEL"              property="level"/>
+        <result column="LEVEL_SUB"              property="levelSub"/>
+        <result column="LEVEL_MAIN"              property="levelMain"/>
+        <association property="memberOneVO" resultMap="member.memberMap"/>
+        <association property="testOneVo"    resultMap="testResult"/>
+        <association property="testSubOneVO" resultMap="subResult"/>
+
+    </resultMap>
+
+    <resultMap id="subResult" type="com.green.Team3.test.vo.TestSubjectVO">
+        <id column="SUB_TEST_NUM"               property="subTestNum" />
+        <result column="SUB_NAME"               property="subName" />
+        <result column="SUB_MAXSCORE"           property="subMaxScore" />
+        <result column="TEST_NUM"               property="testNum" />
+        <association property="testOneVO"      resultMap="testResult"/>
+    </resultMap>
+
+    <resultMap id="testAskResult" type="com.green.Team3.test.vo.TestAskVO">
+        <id column="PROTEST_NUM"            property="protestNum"/>
+        <result column="PROTEST_TITLE"      property="protestTitle"/>
+        <result column="PROTEST_CONTENT"    property="protestContent"/>
+        <result column="PROTEST_DATE"       property="protestDate"/>
+        <result column="PROTEST_WRITER"       property="protestWriter"/>
+        <result column="PROTEST_ORIGINO"    property="protestOrigino"/>
+        <result column="PROTEST_GROUPNO"    property="protestGroupno"/>
+        <result column="MEMBER_ID"          property="memberId"/>
+        <result column="CLASS_NUM"          property="classNum"/>
+        <result column="TEACHER_NUM"        property="teacherNum"/>
+        <result column="TEST_NUM"           property="testNum"/>
+        <result column="TEST_N"           property="testN"/>
+        <result column="CLASS_N"           property="classN"/>
+        <result column="MEMBER_N"           property="memberN"/>
+        <result column="TEACHER_ID"           property="teacherId"/>
+        <result column="TEACHER_N"           property="teacherN"/>
+    </resultMap>
+
+<!-- /////////////////////////////////////// 강사가 로그인해서 성적 처리 관리 ////////////////////////////////////////////  -->
+    <!--[강사] 강사의 강의목록 조회   -->
+    <select id="selectTeacherClassList" resultMap="clsMapper.cls">
+        SELECT T.MEMBER_ID
+        , MEMBER_NAME
+        , T.TEACHER_NUM
+        , CLASS_NAME
+        , CLS.CLASS_NUM
+        , TEACHER_WORK
+        , CLASS_SDATE
+        , CLASS_EDATE
+        , CLASS_ENTER
+        , (SELECT COUNT(O.MEMBER_ID)
+        FROM operator O
+        INNER JOIN MEMBER
+        ON MEMBER.MEMBER_ID = O.MEMBER_ID
+        WHERE O.CLASS_NUM = CLS.CLASS_NUM) AS STU_CNT
+        , CLASS_PERSONNEL
+        , CASE
+        WHEN CLASS_EDATE &gt;= NOW() THEN '강의 중'
+        ELSE '종료'
+        END AS STR_WORK
+        FROM CLASS_INFO CLS INNER JOIN TEACHER T
+        ON CLS.TEACHER_NUM = T.TEACHER_NUM
+        INNER JOIN MEMBER M
+        ON T.MEMBER_ID = M.MEMBER_ID
+        WHERE T.MEMBER_ID = #{memberId}
+        ORDER BY CLASS_SDATE DESC
+    </select>
+
+<!--// ////////////////////////   선생님 반별 시험목록조회 페이지  //////////////////////////////////-->
+
+    <!--(선생님 시험목록조회 페이지로 갈때) 테스트 검색란  -->
+    <select id="searchTestList" resultMap="testResult">
+        SELECT
+        TEST_NUM
+        , TEST_NAME
+        , CLASS_NUM
+        , TEST_DATE
+        , TEST_MAXSCORE
+        FROM test
+        WHERE 1=1
+        AND CLASS_NUM= #{classNum}
+        <if test='searchValue != null and !searchValue.equals("")'>
+            AND ${searchTestType} LIKE CONCAT ('%',#{searchValue},'%')
+        </if>
+        <if test='searchFromDate !=null and !searchFromDate.equals("")'>
+            AND DATE_FORMAT(TEST_DATE,'%Y-%m-%d') &gt;= #{searchFromDate}
+        </if>
+        <if test='searchToDate!=null and !searchFromDate.equals("")'>
+            AND DATE_FORMAT(TEST_DATE,'%Y-%m-%d') &lt;= #{searchToDate}
+        </if>
+        ORDER BY TEST_DATE DESC
+    </select>
+
+
+
+    <!-- (선생님 시험목록조회 페이지로 갈때)   시험명 목록조회 -->
+    <select id="selectTest" resultMap="testResult">
+        SELECT
+        TEST_NAME
+        , TEST_DATE
+        , TEST_MAXSCORE
+        , CLASS_NUM
+        , TEST_NUM
+        FROM TEST
+        WHERE CLASS_NUM = #{classNum}
+        ORDER BY TEST_NUM DESC
+    </select>
+
+
+    <!-- (선생님 시험목록조회 페이지로 갈때)  클래스 번호 쓰기     -->
+    <select id="onlyClassNum" resultMap="clsMapper.cls">
+        SELECT
+        CLASS_NUM
+        , CLASS_NAME
+        , CLASS_SDATE
+        , CLASS_EDATE
+        FROM CLASS_INFO
+        WHERE CLASS_NUM=#{classNum}
+    </select>
+
+
+
+    <!-- (선생님 모달) 평가명 추가   -->
+    <insert id="insertTest">
+        INSERT INTO test (
+        TEST_NAME
+        , TEST_DATE
+        , TEST_MAXSCORE
+        , CLASS_NUM
+        )VALUES(
+        #{testName}
+        , #{testDate}
+        , #{testMaxScore}
+        , #{classNum}
+        )
+    </insert>
+
+    <!-- (선생님 모달) 과목있음 선택시 테스트명, 날짜만 저장 -->
+    <insert id="subMainTestInsert">
+        INSERT INTO test (
+        TEST_NAME
+        , TEST_DATE
+        , CLASS_NUM
+        )VALUES(
+        #{testName}
+        , #{testDate}
+        , #{classNum}
+        )
+    </insert>
+
+
+
+    <!-- (선생님 모달)  과목저장  -->
+    <insert id="insertSub">
+        INSERT INTO TEST_SUBJECT(
+        SUB_NAME
+        , SUB_MAXSCORE
+        , TEST_NUM
+        )VALUES(
+        #{subName}
+        ,#{subMaxScore}
+        ,#{testNum}
+        )
+    </insert>
+
+    <!-- (선생님 모달)  과목목록 조회  -->
+    <select id="selectSubList" resultMap="subResult">
+        SELECT
+        SUB_TEST_NUM
+        , TEST_NUM
+        , SUB_NAME
+        , SUB_MAXSCORE
+        FROM test_subject
+        WHERE test_NUM=#{testNum}
+    </select>
+
+    <!-- (선생님 모달)  모달 과목저장할때 테스트넘버 쓸려고..    -->
+    <select id="testNumInfo2" resultMap="testResult">
+        SELECT
+        TEST_NUM
+        ,TEST_NAME
+        , CLASS_NUM
+        , TEST_MAXSCORE
+        ,TEST_DATE
+        FROM test
+        WHERE test_NUM =#{testNum}
+    </select>
+
+ <!--  /////////////////////////// 시험 상세정보 조회시   ////////////////////////////  -->
+
+    <!--[선생님]  과목 한개 정보 조회  -->
+    <select id="selectSubOne" resultMap="subResult">
+        SELECT
+        SUB_NAME
+        , SUB_MAXSCORE
+        , SUB_TEST_NUM
+        , TEST_NUM
+        FROM test_subject
+        WHERE SUB_TEST_NUM=#{subTestNum}
+    </select>
+
+
+    <!-- [선생님]  메인 테스트 상세정보 변경1  -->
+    <update id="updateTestDetail">
+        UPDATE TEST
+        SET
+        TEST_NAME= #{testName}
+        , TEST_DATE=#{testDate}
+        , TEST_MAXSCORE=#{testMaxScore}
+        WHERE TEST_NUM=#{testNum}
+    </update>
+
+    <!-- [선생님]  메인 테스트 상세정보 변경2  -->
+    <update id="updateTestDeTwo">
+        UPDATE TEST
+        SET
+        TEST_NAME= #{testName}
+        , TEST_DATE=#{testDate}
+        WHERE TEST_NUM=#{testNum}
+    </update>
+
+
+    <!-- [선생님]  과목 상세정보 변경  -->
+    <update id="updateSubDetail">
+        UPDATE test_subject
+        SET
+        SUB_NAME = #{subName}
+        , SUB_MAXSCORE =#{subMaxScore}
+        WHERE SUB_TEST_NUM=#{subTestNum}
+    </update>
+
+
+    <!--  [선생님] 시험 상제정보 '삭제'    -->
+    <delete id="deleteTest">
+        DELETE FROM test
+        WHERE TEST_NUM=#{testNum}
+    </delete>
+
+
+    <!-- [선생님] 과목 상제정보 '삭제'    -->
+    <delete id="deleteSub">
+        DELETE FROM test_subject
+        WHERE SUB_TEST_NUM= #{subTestNum}
+    </delete>
+
+
+    <!-- //////////////////////학생 성적 등록 버튼 클릭시 (1.단일시험)///////////////////////////-->
+
+
+    <!-- [선생님] (단일시험 학생 성적 입력시) 테스트 목록에서 등록버튼 클릭시 학생 성적 조회  -->
+    <select id="selectTestScore" resultMap="scoreResult">
+        SELECT
+        TS.TEST_NUM
+        ,TEST_NAME
+        , SCORE
+        , TS.MEMBER_ID
+        , MEMBER_NAME
+        , TEST_MAXSCORE
+        , SCORE_NUM
+        , CLASS_NUM
+        , SUB_TEST_NUM
+        , DENSE_RANK()
+        OVER (ORDER BY SCORE DESC) AS RANKING
+        FROM test_score TS
+        INNER JOIN test TT
+        ON TS.TEST_NUM= TT.TEST_NUM
+        INNER JOIN member MEM
+        ON MEM.MEMBER_ID=TS.MEMBER_ID
+        WHERE TS.TEST_NUM= #{testNum}
+    </select>
+    <select id="selectAvg" resultMap="scoreResult" >
+        SELECT
+            ROUND(AVG(SCORE),1) AS TEST_AVG
+            FROM test_score
+            WHERE TEST_NUM= #{testNum}
+    </select>
+
+    <!-- [선생님] (단일시험 학생 성적 입력시) 성적 등록 버튼 틀릭 시 저장 -->
+    <insert id="insertStuScore">
+        INSERT INTO TEST_SCORE (
+        SCORE
+        , TEST_NUM
+        , MEMBER_ID
+        )SELECT
+        #{score}
+        , #{testNum}
+        , #{memberId}
+        FROM DUAL
+        WHERE NOT EXISTS(
+        SELECT
+        TEST_NUM
+        , MEMBER_ID
+        FROM test_score
+        WHERE TEST_NUM=#{testNum} AND MEMBER_ID=#{memberId}
+        )
+    </insert>
+
+
+
+    <!-- [선생님] (단일시험 학생 성적 입력시) 성적 등록 란에서 학생명, 시험지명 조회만   -->
+    <select id="memNumInfo" resultMap="member.memberMap">
+        SELECT
+        MEM.MEMBER_ID
+        , MEMBER_NAME
+        , TT.CLASS_NUM
+        , TT.TEST_NUM
+        , TEST_NAME
+        FROM member MEM
+        INNER JOIN operator OP
+        ON MEM.MEMBER_ID= OP.MEMBER_ID
+        INNER JOIN test TT
+        ON OP.CLASS_NUM= TT.CLASS_NUM
+        WHERE TT.TEST_NUM= #{testNum}
+        ORDER BY MEM.MEMBER_NAME ASC
+    </select>
+
+    <!-- [선생님] (단일시험 학생 성적 입력시)  테스트넘버 쓸려고..성적입력페이지에서     -->
+    <select id="testNumInfo" resultMap="testResult">
+        SELECT
+            TEST_NUM
+            ,TEST_NAME
+            , CLASS_NUM
+            , TEST_MAXSCORE
+            ,TEST_DATE
+        FROM test
+        WHERE test_NUM =#{testNum}
+
+    </select>
+
+
+    <!-- [선생님] (단일시험 학생 성적 입력시) 점수 수정 업데이트   -->
+
+    <update id="updateScore"  parameterType="java.util.List" >
+
+        UPDATE test_score
+        SET
+        SCORE = #{score}
+        WHERE Score_Num= #{scoreNum}
+
+    </update>
+
+
+
+
+<!-- /////////////////////////// 학생 성적 등록 버튼 클릭시 (2.과목별시험 입력 )////////////////////////////////////// -->
+
+
+    <!--  [선생님] sub 정보가 있으면  sub 입력페이지 이동 -->
+    <select id="subSelect" resultMap="subResult">
+        SELECT
+        SUB_TEST_NUM
+        , TEST_NUM
+        , SUB_NAME
+        , SUB_MAXSCORE
+        FROM test_subject
+        WHERE test_NUM=#{testNum}
+    </select>
+
+    <!--  [선생님]  학생수 계산하기  -->
+    <select id="stuCnt" resultMap="member.memberMap">
+        SELECT
+            MEM.MEMBER_ID,
+            MEMBER_NAME,
+            CLASS_NUM
+        FROM member MEM
+        INNER JOIN operator OP
+        ON MEM.MEMBER_ID=OP.MEMBER_ID
+        WHERE OP.CLASS_NUM= #{classNum}
+        ORDER BY MEMBER_NAME
+    </select>
+
+
+    <!-- [선생님] 과목있을시 과목별 성적, 등록 버튼 틀릭 시 저장 -->
+    <insert id="insertSubScore" parameterType="java.util.List" >
+        INSERT INTO TEST_SCORE(
+        SCORE
+        , TEST_NUM
+        , MEMBER_ID
+        , SUB_TEST_NUM
+        )VALUES
+
+            (
+            #{score}
+            , #{testNum}
+            , #{memberId}
+            , #{subTestNum}
+            )
+
+    </insert>
+
+        <!-- [선생님] 과목별 점수 조회   -->
+    <select id="selectSubScore" resultMap="scoreResult">
+        SELECT
+            MEMBER_ID
+            , SUB_TEST_NUM
+            ,SCORE
+        FROM test_score
+        WHERE test_NUM=#{testNum}
+        ORDER BY MEMBER_ID, SUB_TEST_NUM
+    </select>
+
+
+    <!--  // //////////////////////////// 학생이 로그인해서 본인 성적 조회 ////////////////////////////////////////////-->
+    <!-- [학생]  본인확인 정보 조회  -->
+    <select id="selectStuTest" resultMap="member.memberMap">
+        SELECT
+        MEM.MEMBER_ID
+        , MEMBER_NAME
+        , MEMBER_ROLL
+        , MEMBER_BIRTH
+        FROM member MEM
+        WHERE MEM.MEMBER_ID= #{memberId}
+    </select>
+
+<!--  [학생] 본인 강좌수 조회  -->
+    <select id="stuClCnt" resultMap="admin.operator">
+        SELECT
+        CLASS_NUM
+        FROM operator
+        WHERE MEMBER_ID=#{memberId}
+    </select>
+
+    <!-- [학생] 수강별조회 서비스-->
+    <select id="selectStuCLTest" resultMap="testResult">
+        SELECT
+        OP.CLASS_NUM
+        , CLASS_NAME
+        , CLASS_ENTER
+        , CLASS_SDATE
+        , CLASS_EDATE
+        , MEMBER_ID
+        , TEST_NUM
+        ,TEST_NAME
+        , TEST_DATE
+        , TEST_MAXSCORE
+        FROM test TT
+        INNER JOIN class_info CI
+        ON TT.CLASS_NUM=CI.CLASS_NUM
+        INNER JOIN operator OP
+        ON CI.CLASS_NUM=OP.CLASS_NUM
+        WHERE OP.MEMBER_ID=#{memberId} AND (SELECT SUM(SCORE) FROM test_score WHERE MEMBER_ID=OP.MEMBER_ID and TEST_NUM=TT.TEST_NUM) IS NOT NULL
+        ORDER BY CLASS_NAME DESC
+    </select>
+
+
+    <!-- [학생] 기간별  과목수 조회 서비스   -->
+    <select id="selectStuTestDetail" resultMap="testResult">
+        SELECT
+        TT.TEST_NUM
+        , TEST_NAME
+        , TEST_MAXSCORE
+        , TEST_DATE
+        , OP.MEMBER_ID
+        , (SELECT COUNT(SUB_NAME)  FROM test_subject WHERE TEST_NUM = TT.TEST_NUM) AS SUB_CNT
+        , (SELECT SUM(SUB_MAXSCORE) FROM test_subject WHERE TEST_NUM=TT.TEST_NUM)AS TOTAL_SUBMAX
+        FROM test TT
+        INNER JOIN operator OP
+        ON TT.CLASS_NUM=OP.CLASS_NUM
+        WHERE OP.MEMBER_ID=#{memberId} AND (SELECT SUM(SCORE) FROM test_score WHERE MEMBER_ID=#{memberId} and TEST_NUM=TT.TEST_NUM) IS NOT NULL
+        ORDER BY TEST_DATE  DESC
+    </select>
+
+    <!-- [학생] 과목별 학생 성적 조회 -->
+    <select id="selectStuSub" resultMap="subResult">
+        SELECT
+        SUB_TEST_NUM
+        , SUB_NAME
+        , SUB_MAXSCORE
+        , TT.TEST_NUM
+        , TEST_NAME
+        , TEST_DATE
+        FROM test_subject TS
+        INNER JOIN test TT
+        ON TS.TEST_NUM=TT.TEST_NUM
+        INNER JOIN operator OP
+        ON TT.CLASS_NUM=OP.CLASS_NUM
+        WHERE OP.MEMBER_ID=#{memberId} AND (SELECT SCORE FROM test_score WHERE MEMBER_ID=OP.MEMBER_ID AND SUB_TEST_NUM=TS.SUB_TEST_NUM)
+        ORDER BY TEST_NAME ASC
+    </select>
+
+
+    <!--  [학생] 전체 성적이수표 조회   -->
+
+    <select id="totalSelectTest" resultMap="clsMapper.cls">
+        SELECT
+            CI.CLASS_NUM
+            , CLASS_NAME
+            , CLASS_ENTER
+            , MEMBER_ID
+            , CLASS_SDATE
+            , CLASS_EDATE
+        FROM test_score TS
+        INNER JOIN test TT
+        ON TS.TEST_NUM= TT.TEST_NUM
+        INNER JOIN class_info CI
+        ON CI.CLASS_NUM= TT.CLASS_NUM
+        WHERE TS.MEMBER_ID=#{memberId}
+        GROUP BY CI.CLASS_NUM
+    </select>
+
+
+
+
+
+    <!--  [학생]  과목 없을시   my 성적페이지 이동 & 조회 -->
+    <select id="mainTestMyScore" resultMap="scoreResult">
+        <![CDATA[
+                SELECT
+                TS.TEST_NUM
+                ,TEST_NAME
+                ,TEST_DATE
+                , SCORE
+                , TS.MEMBER_ID
+                , TEST_MAXSCORE
+                , SCORE_NUM
+                , (SELECT COUNT(SUB_NAME)  FROM test_subject WHERE TEST_NUM = TS.TEST_NUM) AS SUB_CNT
+                , ROUND((SELECT AVG (SCORE) FROM test_score WHERE TEST_NUM=TS.TEST_NUM),1) AS TEST_AVG
+                , (SELECT CLASS_NAME FROM CLASS_INFO WHERE CLASS_NUM=TT.CLASS_NUM) AS CLASS_NAME
+                , CASE
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.90 THEN 'A'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.80 AND TS.SCORE <TEST_MAXSCORE*0.91  THEN 'B'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.70 AND TS.SCORE <TEST_MAXSCORE*0.81  THEN 'C'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.60 AND TS.SCORE <TEST_MAXSCORE*0.71  THEN 'D'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.50 AND TS.SCORE <TEST_MAXSCORE*0.61  THEN 'E'
+                        WHEN TS.SCORE <TEST_MAXSCORE*0.59 THEN 'F'
+                END AS 'LEVEL'
+                FROM test_score TS
+                INNER JOIN test TT
+                ON TS.TEST_NUM= TT.TEST_NUM
+                WHERE TS.TEST_NUM= #{testNum} AND TS.MEMBER_ID=#{memberId}
+        ]]>
+    </select>
+
+    <!--  [학생]  과목 있을시   my 성적페이지 이동 & 조회 -->
+    <select id="subTestMyScore" resultMap="scoreResult">
+        <![CDATA[
+            SELECT
+            TB.TEST_NUM
+            ,TEST_NAME
+            , TEST_DATE
+            , SCORE
+            , TS.MEMBER_ID
+            , TEST_MAXSCORE
+            , SCORE_NUM
+            , TB.SUB_TEST_NUM
+            , SUB_NAME
+            , SUB_MAXSCORE
+            , ROUND((SELECT AVG (SCORE) FROM test_score TS WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM ),1) AS SUB_AVG
+            , (SELECT COUNT(SUB_NAME)  FROM test_subject WHERE TEST_NUM = TS.TEST_NUM) AS SUB_CNT
+            , (SELECT SUM(SCORE) FROM test_score WHERE TEST_NUM= TS.TEST_NUM AND MEMBER_ID=TS.MEMBER_ID) AS SUB_SUM
+            , (SELECT SUM(SUB_MAXSCORE) FROM test_subject WHERE TEST_NUM=TT.TEST_NUM) AS TOTAL_SUBMAX
+            , ROUND((SELECT SUM(SCORE) / COUNT(DISTINCT MEMBER_ID) FROM test_score  WHERE TEST_NUM= TT.TEST_NUM),1) AS SUB_SUM_AVG
+            , (SELECT CLASS_NAME FROM CLASS_INFO WHERE CLASS_NUM=TT.CLASS_NUM) AS CLASS_NAME
+            , CASE
+                        WHEN TS.SCORE >SUB_MAXSCORE*0.90 THEN 'A'
+                        WHEN TS.SCORE >SUB_MAXSCORE*0.80 AND TS.SCORE <SUB_MAXSCORE*0.91  THEN 'B'
+                        WHEN TS.SCORE >SUB_MAXSCORE*0.70 AND TS.SCORE <SUB_MAXSCORE*0.81  THEN 'C'
+                        WHEN TS.SCORE >SUB_MAXSCORE*0.60 AND TS.SCORE <SUB_MAXSCORE*0.71  THEN 'D'
+                        WHEN TS.SCORE >SUB_MAXSCORE*0.50 AND TS.SCORE <SUB_MAXSCORE*0.61  THEN 'E'
+                        WHEN TS.SCORE <SUB_MAXSCORE*0.59 THEN 'F'
+                END AS 'LEVEL'
+            FROM test_score TS
+            INNER JOIN test TT
+            ON TS.TEST_NUM= TT.TEST_NUM
+            INNER JOIN test_subject TB
+            ON TB.SUB_TEST_NUM=TS.SUB_TEST_NUM
+            WHERE TS.TEST_NUM= #{testNum} AND TS.MEMBER_ID=#{memberId}
+        ]]>
+    </select>
+
+    <!--  [학생]  전체 성적증명서 출력 -->
+    <select id="printMyGrade" resultMap="scoreResult">
+        <![CDATA[
+                SELECT
+                TEST_NAME
+                , SCORE
+                , TS.TEST_NUM
+                , MEMBER_ID
+                , CI.CLASS_NUM
+                , IFNULL(TS.SUB_TEST_NUM, 0) AS SUB_TEST_NUM
+                , CASE
+                        WHEN TS.SUB_TEST_NUM IS NOT NULL
+                        THEN (SELECT SUB_NAME FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)
+                        END AS SUB_NAME
+
+                , CASE
+                        WHEN TS.SUB_TEST_NUM IS NOT NULL
+                        THEN ROUND((SELECT AVG (SCORE) FROM test_score T  INNER JOIN test_subject TB ON TB.SUB_TEST_NUM=T.SUB_TEST_NUM
+                        WHERE TB.SUB_TEST_NUM=TS.SUB_TEST_NUM),1)
+                        END AS SUB_AVG
+
+                , CASE
+                        WHEN TS.SUB_TEST_NUM IS NULL
+                        THEN ROUND((SELECT AVG (SCORE) FROM test_score WHERE TEST_NUM=TS.TEST_NUM),1)
+                        END AS TEST_AVG
+                , CASE
+                        WHEN TS.SCORE >(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.90 THEN 'A'
+                        WHEN TS.SCORE >(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.80 AND TS.SCORE <(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.91  THEN 'B'
+                        WHEN TS.SCORE >(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.70 AND TS.SCORE <(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.81  THEN 'C'
+                        WHEN TS.SCORE >(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.60 AND TS.SCORE <(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.71  THEN 'D'
+                        WHEN TS.SCORE <=(SELECT SUB_MAXSCORE FROM test_subject TB WHERE TS.SUB_TEST_NUM=TB.SUB_TEST_NUM)*0.59 THEN 'F'
+                        END AS LEVEL_SUB
+                , CASE
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.90 THEN 'A'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.80 AND TS.SCORE <TEST_MAXSCORE*0.91  THEN 'B'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.70 AND TS.SCORE <TEST_MAXSCORE*0.81  THEN 'C'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.60 AND TS.SCORE <TEST_MAXSCORE*0.71  THEN 'D'
+                        WHEN TS.SCORE >TEST_MAXSCORE*0.50 AND TS.SCORE <TEST_MAXSCORE*0.61  THEN 'E'
+                        WHEN TS.SCORE <TEST_MAXSCORE*0.59 THEN 'F'
+                        END AS LEVEL_MAIN
+                FROM test_score TS
+                INNER JOIN test TT
+                ON TS.TEST_NUM= TT.TEST_NUM
+                INNER JOIN class_info CI
+                ON TT.CLASS_NUM = CI.CLASS_NUM
+                WHERE MEMBER_ID=#{memberId} AND CI.CLASS_NUM =#{classNum}
+                ORDER BY TEST_NUM ASC
+         ]]>
+    </select>
+
+    <!--  // //////////////////////////// 학생이 로그인해서 성적이의신청 페이지 ////////////////////////////////////////////-->
+
+
+    <!--   [학생] 이의신청 글 적기   -->
+    <insert id="insertStuAsk">
+        INSERT INTO test_ask(
+        PROTEST_TITLE
+        , PROTEST_CONTENT
+        , PROTEST_ORIGINO
+        , PROTEST_GROUPNO
+        , PROTEST_WRITER
+        , MEMBER_ID
+        , CLASS_NUM
+        , TEST_NUM
+        )VALUES(
+        #{protestTitle}
+        ,  #{protestContent}
+        , 0
+        , 0
+        , #{protestWriter}
+        , #{memberId}
+        , #{classNum}
+        , #{testNum}
+        )
+
+    </insert>
+
+    <!-- [학생] 이의신청 글 목록  -->
+    <select id="selectStuAsk" resultMap="testAskResult">
+        SELECT
+        PROTEST_NUM
+        , PROTEST_TITLE
+        , PROTEST_DATE
+        , PROTEST_CONTENT
+        , PROTEST_ORIGINO
+        , PROTEST_GROUPNO
+        , MEMBER_ID
+        , TEST_NUM
+        , (SELECT MEMBER_NAME FROM MEMBER MEM WHERE MEM.MEMBER_ID= TA.MEMBER_ID)AS MEMBER_N
+        , (SELECT TEST_NAME FROM TEST TT WHERE TT.TEST_NUM= TA.TEST_NUM) AS TEST_N
+        , (SELECT CLASS_NAME FROM class_info CI WHERE CI.CLASS_NUM= TA.CLASS_NUM) AS CLASS_N
+        FROM test_ask TA
+        WHERE MEMBER_ID=#{memberId}
+        ORDER BY PROTEST_ORIGINO ASC, PROTEST_GROUPNO ASC
+    </select>
+
+    <!-- [학생] 이의신청 상세글 보기  -->
+    <select id="stuAskDetail" resultMap="testAskResult">
+        SELECT
+        PROTEST_NUM
+        , PROTEST_TITLE
+        , PROTEST_DATE
+        , PROTEST_CONTENT
+        , PROTEST_WRITER
+        , MEMBER_ID
+        , CLASS_NUM
+        , TEST_NUM
+        , PROTEST_ORIGINO
+        , PROTEST_GROUPNO
+        , (SELECT MEMBER_NAME FROM MEMBER MEM WHERE MEM.MEMBER_ID= TA.MEMBER_ID)AS MEMBER_N
+        , (SELECT TEST_NAME FROM TEST TT WHERE TT.TEST_NUM= TA.TEST_NUM) AS TEST_N
+        , (SELECT CLASS_NAME FROM class_info CI WHERE CI.CLASS_NUM= TA.CLASS_NUM) AS CLASS_N
+        FROM test_ask TA
+        WHERE PROTEST_NUM= #{protestNum}
+
+    </select>
+
+    <!-- [학생] 계단형 원글 저장하기 (3)   -->
+    <update id="updateOrigin">
+        UPDATE test_ask
+        SET PROTEST_ORIGINO= #{protestNum}
+        WHERE PROTEST_NUM=#{protestNum}
+    </update>
+
+    <!--  답글 버튼 표시 구분하려고  -->
+    <select id="askMemberId" resultMap="teacher.teacherInfo">
+        SELECT
+        MEMBER_ID
+        , TEACHER_NUM
+        FROM TEACHER
+        WHERE MEMBER_ID=#{memberId}
+    </select>
+
+    <!-- 학생 신청글 수정   -->
+    <update id="updateMyAsk">
+        UPDATE test_ask
+        SET PROTEST_TITLE =#{protestTitle},
+        PROTEST_CONTENT=#{protestContent}
+        WHERE PROTEST_NUM=#{protestNum}
+    </update>
+
+    <!--학생 글삭제-->
+    <delete id="deleteMyAsk">
+        DElETE FROM test_ask
+        WHERE PROTEST_NUM=#{protestNum}
+    </delete>
+
+    <!--선생님이 학생글삭제-->
+    <delete id="deleteThAsk">
+        DElETE FROM test_ask
+        WHERE protest_origino=#{protestOrigino}
+    </delete>
+
+<!--  // //////////////////////////// 선생님 성적이의신청 페이지 ////////////////////////////////////////////-->
+    <!--  선생님 이의신청 목록   -->
+    <select id="selTeacherAsk" resultMap="testAskResult">
+        SELECT
+        PROTEST_NUM
+        , PROTEST_TITLE
+        , PROTEST_DATE
+        , TA.CLASS_NUM
+        , TA.MEMBER_ID
+        , PROTEST_ORIGINO
+        , PROTEST_GROUPNO
+        , (SELECT MEMBER_NAME FROM MEMBER MEM WHERE MEM.MEMBER_ID= TA.MEMBER_ID)AS MEMBER_N
+        , (SELECT TEST_NAME FROM TEST TT WHERE TT.TEST_NUM= TA.TEST_NUM) AS TEST_N
+        , (SELECT CLASS_NAME FROM class_info CI WHERE CI.CLASS_NUM= TA.CLASS_NUM) AS CLASS_N
+        , TC.MEMBER_ID AS TEACHER_ID
+        , (SELECT MEMBER_NAME FROM MEMBER MEM WHERE MEM.MEMBER_ID= TC.MEMBER_ID)AS TEACHER_N
+        FROM test_ask TA
+        INNER JOIN class_info CI
+        ON CI.CLASS_NUM=TA.CLASS_NUM
+        INNER JOIN TEACHER TC
+        ON TC.TEACHER_NUM = CI.TEACHER_NUM
+        WHERE TC.MEMBER_ID =#{memberId}
+        ORDER BY PROTEST_ORIGINO ASC, PROTEST_GROUPNO ASC
+    </select>
+
+    <!-- 선생님 답글 저장하기 (1)   -->
+    <insert id="insertCom">
+        INSERT INTO test_ask(
+        PROTEST_TITLE
+        , PROTEST_CONTENT
+        , PROTEST_ORIGINO
+        , PROTEST_GROUPNO
+        , PROTEST_WRITER
+        , MEMBER_ID
+        , CLASS_NUM
+        , TEST_NUM
+        )VALUES(
+        #{protestTitle}
+        , #{protestContent}
+        , #{protestOrigino}
+        , #{protestGroupno}
+        , #{protestWriter}
+        , #{memberId}
+        , #{classNum}
+        , #{testNum}
+        )
+    </insert>
+    <!-- 선생님 계단형 답글 저장하기 (2)   -->
+    <update id="updateComm">
+        UPDATE test_ask
+        SET PROTEST_GROUPNO= #{protestGroupno}
+        WHERE PROTEST_ORIGINO=#{protestOrigino} AND PROTEST_GROUPNO&gt;0
+    </update>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

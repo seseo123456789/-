@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="calender">
+    <resultMap id="eventCalender" type="com.green.Team3.learn.vo.EventCalenderVO">
+        <id             column="EVENT_NUM"      property="eventNum"/>
+        <result         column="TITLE"     property="title"/>
+        <result         column="START"     property="start"/>
+        <result         column="EVENT_TYPE_NUM" property="eventTypeNum"/>
+        <result         column="MEMBER_ID" property="memberId"/>
+        <association    property="eventTypeVO"  resultMap="eventType"/>
+    </resultMap>
+    <resultMap id="eventType" type="com.green.Team3.learn.vo.EventTypeVO">
+        <id         column="EVENT_TYPE_NUM"     property="eventTypeNum"/>
+        <result     column="EVENT_TYPE_NAME"    property="eventTypeName"/>
+    </resultMap>
+
+    <select id="selectEventTypeForTeacherByConsult" resultMap="eventType">
+        SELECT EVENT_TYPE_NUM,EVENT_TYPE_NAME
+        FROM EVENT_TYPE
+        WHERE EVENT_TYPE_NUM = '8'
+    </select>
+
+    <select id="selectClassNameByClassNum" resultType="String">
+        SELECT CLASS_NAME FROM CLASS_INFO
+        WHERE CLASS_NUM = #{classNum}
+    </select>
+
+    <insert id="insertEventCalender">
+        INSERT INTO event_calender (
+            MEMBER_ID,
+            TITLE,
+            START,
+            EVENT_TYPE_NUM
+        ) VALUES (
+            #{memberId},
+            #{title},
+            #{start},
+            #{eventTypeNum}
+        )
+    </insert>
+
+    <select id="addEventBar" resultMap="eventCalender">
+        SELECT TITLE ,START
+        FROM EVENT_CALENDER EC
+        INNER JOIN EVENT_TYPE ET
+        ON EC.EVENT_TYPE_NUM = ET.EVENT_TYPE_NUM
+    </select>
+    <delete id="deleteCalender">
+        DELETE FROM EVENT_CALENDER
+        WHERE TITLE = #{title}
+    </delete>
+    <delete id="autoDeleteCalender">
+        DELETE FROM event_calender
+        WHERE DATE_SUB(NOW(), INTERVAL 3 YEAR) >= START
+        AND IF(END IS NULL, 1 = 1, DATE_SUB(NOW(), INTERVAL 3 YEAR) >= END)
+    </delete>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

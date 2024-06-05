@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="adminSideFragment">
+      <style type="text/css">
+        li{
+          line-height: 30px;
+        }
+      </style>
+
+          <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+                  게시판
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" th:classappend="${accorNum == 1 ? ' show' : ''}">
+                <div class="accordion-body">
+                  공지사항
+                  <ul>
+                    <li><span class="pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/board/noticeListStu?typeNum=1&accorNum=1'">학사 공지</span></li>
+                    <li><span class="pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/board/noticeListTea?typeNum=2&accorNum=1'">강사 공지</span></li>
+                  </ul>
+                  문의사항
+                  <ul>
+                    <li><span class="pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/board/qnaList?typeNum=3&typeNum=4&accorNum=1'">Q&A</span></li>
+                  </ul>
+                  <ul>
+                    <li class="mt-2 pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/admin/boardControll?accorNum=1'">게시판 관리</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                  학급
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" th:classappend="${accorNum == 3 ? ' show' : ''}">
+                <div class="accordion-body">
+                  학급 관리
+                  <ul>
+                    <li><span class="pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/admin/makeClassForm?accorNum=3'">학급 생성</span></li>
+                    <li>학생 출결 관리</li>
+                    <li>진도 / 수업율</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+    
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+                  행정 관리
+                </button>
+              </h2>
+                <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse" th:classappend="${accorNum == 5?' show' : ''}">
+                  <div class="accordion-body">
+                    <ul>
+                      <li class="mt-2 pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/admin/goAdminTeacher?accorNum=5'">근태 관리</li>
+                      <li class="mt-2 pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/admin/goMemberList?accorNum=5'">회원 관리</li>
+                      <li class="mt-2 pointer-span link-body-emphasis link-offset-2 link-underline-opacity-75-hover" onclick="location.href='/admin/goSales?accorNum=5'">매출 관리</li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+          </div> 
+
+    </th:block>
+</html>

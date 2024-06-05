@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+    <th:block th:fragment="headerFragment">
+        <div class="row loginFor" style="height: 105px;  margin-top: 20px; margin-bottom: 20px; ">
+
+            <th:block sec:authorize="isAnonymous()">
+                
+                <div class="col-9" style="vertical-align: middle; text-align: center; font-size: 40px; padding-left: 5px; " onclick="location.href='/'">
+                        <div class="row">
+                            <div class="col">
+                                <span style="margin-right: 18px;"><img src="/images/small_logo.png" style="width: 120px; height: 50px; align-items: start; padding-left: 15px;"></span>
+                                <span style="color: #25ac30; font-weight: bold; padding-right: 10px; font-size:40px;" >GREEN GENERAL ACADEMY</span>
+                            </div>
+                        </div>
+                        <div class="row" style="vertical-align: top; width: 900px;">
+                            <div class="col" style="color: rgb(23, 141, 156); font-weight: bold; font-size:20px; text-align: end;">
+                                미래를 향해 길을 열어가는 울산 대표 아카데미    
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="col-3">
+                            <table class="table" style="border-bottom: white; text-align: center;">
+                                <colgroup>
+                                    <col width="35%">
+                                    <col width="35%">
+                                    <col width="30%">
+                                </colgroup>
+                                <tr>
+                                    <td colspan="3" style="padding-left: 25px;">
+                                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#LoginStaticBackdrop"><span style="font-weight: bolder;">그린 학원 로그인</span></button> 
+                                    </td>
+                                </tr>
+                                <tr style="font-size: 0.9rem;">
+                                    <td style="text-align: right; padding: 0px 8px;">
+                                        <a href="/member/findIdForm">아이디 찾기</a>
+                                    </td>
+                                    <td style="border-left: 2px solid #198754; padding: 0px 8px;">
+                                        <a href="/member/findPasswordForm">비밀번호 찾기</a>
+                                    </td>
+                                    <td style="border-left: 2px solid #198754; text-align: left; padding: 0px 8px;">
+                                        <a href="/member/joinForm">회원 가입</a>
+                                    </td>
+                                </tr>
+                            </table>
+                </div>
+                <!-- 모달 -->
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+
+<div class="modal fade" id="LoginStaticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">그린 학원 로그인</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/member/login" method="post">
+                <div class="modal-body">
+                    <table class="table" style="border: white;">
+                        <tr>
+                            <td>
+                                <div class="col-12" th:if="${errorMsg != 'success'}" style="text-align: right; color:red; font-size:0.9rem;">
+                                    [[${errorMsg}]]
+                                </div>
+                                <div class="col-12 form-floating mb-3">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="ID" name="memberId">
+                                    <label for="floatingInput">ID</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="col-12 form-floating">
+                                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="memberPw">
+                                    <label for="floatingPassword">Password</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input class="btn btn-outline-success" type="submit" value="Log in">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+            </th:block>
+
+            <th:block sec:authorize="isAuthenticated()">
+                <div class="col-3">
+                    <span style="margin-left: 32px;"><img src="/images/small_logo.png" style="width: 120px; height: 50px; align-items: start; padding-left: 15px;"></span>
+                </div>
+                <div class="col-6" style="text-align: center;" onclick="location.href='/'">
+                    <span style="color: #25ac30; font-weight: bold; font-size:40px;" >GREEN GENERAL ACADEMY</span>
+                
+                </div>
+                <div class="col-3">
+                    <div class="row" style="height: 105px;">
+                        <th:block sec:authorize="hasRole('ROLE_1')">
+                            <div class="col-7" style="text-align: right;">                               
+                                <div class="row">
+                                        <div class="col-12" style="padding-top:5px; cursor:pointer;" onclick="location.href='/member/myInformationForm'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                            </svg>개인 정보
+                                        </div>
+                                        <div class="col-12">
+                                            <strong>[[${session.memberName}]] 수강생</strong>
+                                        </div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block sec:authorize="hasRole('ROLE_2')">
+                            <div class="col-7" style="text-align: right;">
+                                <div class="row">
+                                    <div class="col-12" style="padding-top:5px; cursor:pointer;" onclick="location.href='/member/myInformationForm'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                        </svg>개인 정보
+                                    </div>
+                                    <div class="col-12">
+                                        <strong>[[${session.memberName}]] 강사</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block sec:authorize="hasRole('ROLE_3')">
+                            <div class="col-7" style="text-align: right;">                           
+                                <div class="row">
+                                    <div class="col-12" style="padding-top:5px; cursor:pointer;" onclick="location.href='/member/myInformationForm'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                        </svg>개인 정보
+                                    </div>
+                                    <div class="col-12">
+                                        <strong>[[${session.memberName}]] 관리자 </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <div class="col-5" style="padding: 8.2px 0px;">
+                            <button type="button" class="btn btn-outline-secondary" style="padding-right: 8px; height: 38px;" onclick="location.href='/member/logout'">로그아웃
+                                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16" style="padding-bottom: 3px;">
+                                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+    </th:block>
+</html>

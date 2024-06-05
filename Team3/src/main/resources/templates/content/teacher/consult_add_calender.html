@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <link rel="stylesheet" href="/css/content/teacher/homework.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성-->
+    
+<div class="row">
+    <div class="col-8">
+
+        <div id='calendar-container' style="--fc-today-bg-color: rgba(36, 173, 24, 0.09);">
+            <div id='calendar'></div>
+        </div>
+
+    </div>
+    <div class="col-4">
+
+        <form id="consultForm" action="/calender/addCalender" method="post">
+            <table class="table">
+                <colgroup>
+                    <col width="50%">
+                    <col width="50%">
+                </colgroup>
+                <tr>
+                    <td colspan="2" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;" >
+                        <h3><strong>상담 일정 추가</strong></h3>
+                    </td>
+                </tr>
+                <tr style="border-bottom: 2px solid rgb(23, 141, 156); text-align: center;">
+                    <td><strong>수강명</strong></td>
+                    <td><strong>수강생명</strong></td>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="classNum" onchange="change()" class="form-select box-line" id="class_select">
+                            <option th:each="class:${classInfo}" th:value="${class.classNum}">[[${class.className}]]</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="memberId" id="stu_select" class="form-select box-line">
+                                
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input class="form-control box-line" type="date" name="start">
+                    </td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="col" style="text-align: right;">
+                    <input class="btn btn-outline-success" type="submit" value="추가">
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+</th:block>
+
+
+    
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    <script src="/js/teacher/consult_add_calender.js"></script>
+</th:block>
+</html>

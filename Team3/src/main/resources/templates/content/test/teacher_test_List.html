@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <link rel="stylesheet" href="/css/content/test/test.css">
+    
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성 -->
+    
+
+    <div class="row">
+    <div class="col">
+
+        <form action="/test/scoreTeacher" method="post">
+            <input type="hidden" id="classNum" name="classNum" th:value="${onlyClassNum.classNum}"> 
+    
+        
+                    <div class="row">
+                        <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                            <h3><strong>[[${onlyClassNum.className}]] 시험관리</strong></h3>
+                        </div>
+                    </div>
+            
+            <div class="row mt-5" style="width: 1000px; padding-left: 20px; margin: 20px; ">
+                <div class="col" >
+                    <div class="row">
+                        
+                        <div class="col-2" style="width: fit-content;" >
+                            <select class="form-select" name="searchTestType">
+                                <option value="TEST_NUM" th:selected="${searchTestVO.searchTestType == null or searchTestVO.searchTestType =='testNum'}">시험번호</option>
+                                <option value="TEST_NAME" th:selected="${searchTestVO.searchTestType =='testName'}">시험명</option>
+                            </select>
+                        </div>
+                        <div class="col-3" style="width: fit-content;">
+                            <input type="text" name="searchValue" th:value="${searchTestVO.searchValue}" class="form-control">
+                        </div>
+                        <div class="col-3" style="width: fit-content;">
+                            <input type="date"  name="searchFromDate" th:value="${searchTestVO.searchFromDate}" class="form-control">
+                        </div>
+                        <div class="col-1" style="width: fit-content;"> ---- </div>
+                        <div class="col-3" style="width: fit-content;">
+                            <input type="date" name="searchToDate" th:value="${searchTestVO.searchToDate}" class="form-control">
+                        </div>
+                        <div class="col-1">
+                            <input type="submit" class="btn btn-primary btn-sm" value="검색">
+                        </div>
+                    </div>
+    
+    
+                </div>
+            </div>
+        </form>    
+    
+        
+        
+            <div class="row mt-2">
+                <div class="col">
+                    
+                    <div class="row mb-3" style="width: 1000px;">
+                            <div class="col">
+                                <h5><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                                    </svg> 성적처리 시험 목록</strong></h5>
+                                    
+                            </div>
+                            <div class="col" style="font-size:13px; color: red; font-weight: 15px; text-align: end; margin-top: 10px;">
+                                * 성적입력을 위해서 시험설정하세요.
+
+                            </div>
+                            <div class="col-1" style="width: fit-content; text-align: end;" >                                                    
+                                <button type="button" class="scoreBtn btn btn-secondary happy" th:onclick="happyBtn([[${onlyClassNum.classNum}]])">
+                                시험 설정
+                                </button>                     
+                            </div>                               
+                    </div>
+                    
+                    <div class="row" style="width: 1000px;">
+                        <div class="col">
+                            <div class="scroll-div" style="width: 100%; height: 150px; overflow:auto;">
+                                
+    
+                                <table class="table-blank text-center align-middle tr-line">
+                                    <colgroup>
+                                        <col width="20%">
+                                        <col width="30%">
+                                        <col width="25%">
+                                        <col width="25%">
+                                    </colgroup>    
+                                    <tr class="thead-top">                                    
+                                        <td class="td-line"><strong>시험번호</strong></td>
+                                        <td class="td-line"><strong>시험명</strong></td>
+                                        <td class="td-line"><strong>시험일자</strong></td>
+                                        <td class="td-line"><strong>시험관리</strong></td>
+                                    </tr>
+    
+                                    
+                                    <tr class="tr-row tr-line" th:each="seleOp:${searchTests}" style="font-size: 15px;">
+                                        <td class="td-line" id="testNum">[[${seleOp.testNum}]]</td>                                        
+                                        <td class="td-line" ><span>[[${seleOp.testName}]]</span></td>                                           
+                                        <td class="td-line">[[${seleOp.testDate}]]</td>
+                                        <td class="td-line">
+                                            <input type="button" class="btn btn-secondary btn-sm listBtn"  th:onclick="goSelectSub([[${seleOp.testNum}]], [[${seleOp.classNum}]], [[${seleOp.testMaxScore}]], this)" 
+                                            value="등록" >
+
+                                            <input type="button"  class="btn btn-secondary btn-sm listBtn" th:onclick="goSelectScore([[${seleOp.testNum}]], this)" 
+                                            value="조회" >
+                                            
+                                        </td>
+                                    </tr>
+                                </table>
+    
+                            </div> 
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="row" style="width: 800px;">
+                        <div class="col-3" style="margin-top: 20px; margin-bottom: 20px;">
+                            <h5><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                                </svg> 시험 상세정보</strong></h5>
+                                
+
+                        </div>
+                        <div class="col-9" style="margin-top: 30px; font-size:13px; color: red; font-weight: 15px; text-align: end;">  
+                            * 위 조회 클릭시 상세정보를 확인할 수 있습니다.                                                  
+                                                
+                        </div> 
+                        
+                        
+                        
+                    </div>                   
+    
+    
+                    <div class="row rowthree">
+                        <div class="col">
+
+                            <div class="row ">                                                                                     
+                                        <div class="col-10 scoreList-div">                                 
+                                    
+                                            <table class="table-blank text-center align-middle tr-rowTwo" style="width:100%; margin-left:10px; border-collapse: collapse; border: 1px solid rgba(22, 121, 55, 0.438); ">
+                                                <colgroup>
+                                                    <col width="10%">
+                                                    <col width="30%">
+                                                    <col width="20%">
+                                                    <col width="20%">
+                                                    <col width="20%">
+                                                </colgroup>
+                                                <tr style="font-size: 16px;" class="th-noback">                                    
+                                                    <th>시험번호</th>
+                                                    <th>시험명</th>
+                                                    <th>시험만점</th>
+                                                    <th>시험일자</th>
+                                                    <th>시험관리</th>                                                
+                                                </tr>
+        
+        
+                                            </table>                                                                                      
+                                        </div>                                                                                                                    
+                            </div>
+
+                            <form id="subform" action="/test/updateSubTest" method="post">
+                                <div class="row mt-1 rowfour" >
+                                    <div class="col-8">
+                                        <table class="table-blank text-center align-middle tr-rowTwo" style="width:70%; margin-left:10px; border-collapse: collapse; border: 1px solid rgba(22, 121, 55, 0.438); ">
+                                            <colgroup>
+                                                <col width="20%">
+                                                <col width="25%">
+                                                <col width="20%">
+                                                <col width="20%">                                               
+                                            </colgroup>
+                                            <tr style="font-size: 16px;" class="th-noback">
+                                                <th>과목번호</th>                                    
+                                                <th>과목</th>
+                                                <th>과목만점</th>
+                                                <th>과목관리</th>                                                                                                 
+                                            </tr>
+                                            
+                                        </table>
+                                    </div>    
+                                </div>
+                            </form>
+                                            
+    
+                        </div>
+                    
+                    
+                    </div>
+                </div>
+            </div>  
+    
+    </div>          
+    </div>
+    
+
+
+
+
+    <!--시험 설정 모달입니다!!!!!!!!!!!!!!!!!!!!!! Button trigger modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="testJoin-form" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog-centered modal-dialog modal-lg">
+        <div class="modal-content">
+                    <div class="modal-header"  style="border-bottom: 5px solid rgb(23, 141, 156);">
+
+                        
+
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                <strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                                    </svg>  
+                                    시험 Set 만들기
+                                </strong> 
+                            </h5>
+
+                        
+                    </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col">
+                                                
+                                            <div class="row">
+                                                <div class="col-5">
+    
+                                                    <div class="row">
+                                                        <div class="col" style="font-size: 18px ;">
+                                                            <strong>시험종류</strong>
+                                                        </div>
+                                                    </div>
+    
+                                                    <div class="row">
+                                                        <div class="col-9">
+                                                            <select class="form-select chTest" onchange="changeTest()" size="6" aria-label="Size 3 select example"  id="sel" style="font-size: 15px;" >
+                                                                <option >1</option>
+                                                                <option >2</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <div class="row">
+                                                                    <div class="col">
+                                                                        <button type="button"  class="btn btn-secondary upBtn" style="--bs-btn-hover-border-color:rgb(125, 193, 202);  --bs-btn-border-color:rgb(125, 193, 202); --bs-btn-bg: rgb(125, 193, 202);--bs-btn-hover-bg:rgb(23, 141, 156); font-size: 12px; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">오름<br>차순</button>
+                                                                    </div>
+                                                            </div>
+                                                            <div class="row mt-2">
+                                                                    <div class="col">
+                                                                        <button type="button" class="btn btn-secondary downBtn" style="--bs-btn-hover-border-color:rgb(125, 193, 202);  --bs-btn-border-color:rgb(125, 193, 202); --bs-btn-bg: rgb(125, 193, 202);--bs-btn-hover-bg:rgb(23, 141, 156); font-size: 12px; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">내림<br>차순</button>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="row mt-4">
+                                                        <div class="col">
+
+                                                            <div class="row" style="width: 180px; margin-left: 2px; font-size: 12px;">
+                                                                <div class="col" style="background-color:rgb(23, 141, 156); color: white;">
+                                                                    <strong><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 20 20">
+                                                                        <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+                                                                        </svg> 시험만들기 TIP's</strong>
+                                                                </div>
+                                                            </div> 
+
+
+
+
+                                                            <table class="table text-center" style="width: 75%;">
+                                                                <tr style="text-align: start; font-size: 12px;">
+                                                                    <td>                                                               
+                                                                        -과목생성여부 확인하세요.<br>
+                                                                        -'과목있음' 선택: 시험등록 후, 과목을 추가하세요. <br>
+                                                                        -수정 & 삭제: 시험 목록>시험상세정보 에서 가능합니다.<br>
+                                                                        
+                                                                                                                                            
+                                                                    </td>    
+                                                                </tr>
+                                                            </table>
+
+                                            
+
+                                                        </div>
+                                                    </div>          
+                                                    
+
+
+                                                </div>
+    
+    
+                                                <div class="col-7">
+                                                    <div class="row"> 
+                                                        <div class="col">
+
+
+                                                            <div class="row">
+                                                                <div class="col" style="width: 300px;">
+
+
+                                                                        <div class="row">
+                                                                            <div class="col">
+                                                                                <input type="radio" name="isSub" id="isSub" value="1" checked ><strong>과목없음</strong>
+                                                                            </div>                     
+                                                                        </div>
+                                                                        <div class="row mt-1">
+                                                                            <div class="col"> 
+                                                                                <input type="radio"  name="isSub" id="isSub" value="2"><strong>과목있음</strong>
+                                                                        </div>
+                                                                        
+                                                                        <div class="row mt-3">
+                                                                            <div class="col" style="font-size: 18px;">
+                                                                                <strong>시험명</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mt-1">
+                                                                            <div class="col">
+                                                                                <input class="testInfoInput form-control"  type="text"  name="testName" id="testName" style="width: 70%;">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row  mt-1">
+                                                                            <div class="col" style="font-size: 18px;">
+                                                                                <strong>시험일자</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row mt-1">
+                                                                            <div class="col">
+                                                                                <input class="testInfoInput form-control"  type="date"  name="testDate" id="testDate" style="width: 70%;">
+                                                                            </div>
+                                                                        </div>
+                                                                    
+                                                                        <div class="row mt-1">
+                                                                            <div class="col" id="hiddenPerfect">
+
+                                                                                <div class="row">
+                                                                                    <div class="col" style="font-size: 18px;">
+                                                                                        <strong>시험만점</strong>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col">
+                                                                                        <input class="testInfoInput form-control"  type="text"  name="testMaxScore" id="testMaxScore" style="width: 70%;">
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row mt-2">
+                                                                <div class="col testAddBtn">
+                                                                    <input type="button"  class="btn btn-secondary btn-sm" value="시" style="--bs-btn-hover-border-color:rgb(179, 179, 180);  --bs-btn-border-color:rgb(179, 179, 180); --bs-btn-bg: rgb(179, 179, 180);--bs-btn-hover-bg:rgb(179, 179, 180);">
+                                                                </div>
+                                                            </div>                                                           
+                                                                
+                                                                <div class="classGoSub">
+                                                                <!--  과목입력테이블 들어올자리 -->
+
+                                                                </div>
+
+                                                        
+                                                        </div>
+                                                    </div> 
+
+                                                </div>                                                    
+                                            </div>
+                            
+    
+                                        </div>
+                                    </div>
+
+                                </div>
+        
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="updateScorePage()">닫기</button>
+            <button type="button" class="btn btn-primary" onclick="updateScorePage()">확인</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <script src="/js/content/test/teacher_test_List.js"></script>
+</th:block>
+</html>
+
+
+
+
+

@@ -1,0 +1,48 @@
+.input-tag{
+  width: 200px; 
+  padding: 10px; 
+  border: .5px solid rgb(228, 228, 228); 
+  border-radius: 6px;
+  height: 0.5%;
+}
+
+input::placeholder{
+  columns: rgb(205, 205, 205);
+  letter-spacing: 2px;
+}
+
+.span-div{
+  margin-bottom: 1%;
+}
+
+.title-td{
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.btn-input{
+  margin-left: 90%;
+  width: 10%;
+}
+
+.list-table{
+  width: 80%;
+  margin-left: 10%;
+}
+
+.table-success{
+  --bs-table-border-color: rgb(25, 135, 84, 1);
+}
+
+.btn-button{
+  --bs-btn-line-height:1.2;
+}
+
+.txt-input{
+  width: 180px;
+  padding: 5px; 
+  border: .5px solid rgb(228, 228, 228); 
+  border-radius: 6px;
+  height: 0.5%;
+  text-align: center;
+}

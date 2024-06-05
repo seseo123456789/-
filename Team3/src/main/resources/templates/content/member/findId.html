@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <link rel="stylesheet" href="/">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성-->
+    <div class="row" style="padding: 200px;">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-12" style="text-align: center;">
+                    <div class="row">
+                        <div class="col-4 mb-2" style="padding: 7px;">
+                            이름
+                        </div>
+                        <div class="col-8 mb-2" style="padding: 0px 12px;">
+                            <input type="text" id="name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 mb-2" style="padding: 7px;">
+                            전화번호
+                        </div>
+                        <div class="col-8 mb-2" style="padding: 0px 12px;">
+                            <input type="text" id="tel" class="form-control" placeholder="only number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 mb-2" style="padding: 7px;">
+                            생년월일
+                        </div>
+                        <div class="col-8 mb-2" style="padding: 0px 12px;">
+                            <input type="text" id="birth" class="form-control" placeholder="1900-00-00">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" style="height: 38px; padding: 0px;">
+                            <button type="button" class="btn btn-outline-success" onclick="result()">아이디 찾기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6" id="resultId" style="background-color: #198754;">
+            
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    <script src="/js/member/findId.js"></script>
+</th:block>
+</html>

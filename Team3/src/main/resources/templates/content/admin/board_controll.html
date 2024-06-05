@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+  <!-- html 파일이 열릴때 같이 실행되는 css -->
+  <link rel="stylesheet" href="/css/content/admin/board_controll.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+  <!-- html 코드 작성 -->
+  <div class="row">
+    <div class="col">
+      
+      <div class="row">
+        <div class="col">
+          <div class="row mb-2">
+            <div class="col">
+              <h2 class="title-div" >게시판 관리</h2> 
+            </div>
+          </div>
+          <div class="row">
+            <div class="col span-div" >
+              <span>게시판 분류(문의/공지)를 위한 관리 페이지입니다.</span>
+            </div>
+          </div>
+          <table class="table table-bordered border-success">
+            <colgroup>
+              <col width="25%">
+              <col width="25%">
+              <col width="25%">
+              <col width="25%">
+            </colgroup>
+            <!-- <tr>
+              <td class="title-td align-middle">타입</td>
+              <td colspan="3">
+                <input type="number" name="typeNum" placeholder="(예) 1" class="input-tag num-input">
+              </td>
+            </tr> -->
+            <tr>
+              <td class="title-td align-middle">분류</td>
+              <td colspan="3">
+                  <input type="text" name="typeName" class="input-tag name-input" placeholder="분류명을 입력하세요.">
+              </td>
+            </tr>
+          </table>
+          <div class="row">
+            <div class="col">
+              <input type="hidden" value="1" name="accorNum">
+              <input type="button" value="등록" class="btn-input btn btn-outline-success" onclick="showTypes()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col">
+          <table class="table list-table text-center table-bordered border-success align-middle" >
+            <colgroup>
+              <col width="30%">
+              <col width="30%">
+              <col width="40%">
+            </colgroup>
+            <thead>
+              <tr class="table-success">
+                <td>번호</td>
+                <td>분류명</td>
+                <td>버튼</td>
+              </tr>
+            </thead>
+            <tbody class="show-types">
+              <th:block th:if="${#lists.isEmpty(types)}">
+                <tr>
+                  <td colspan="2" class="type-td">게시판 분류 정보가 없습니다.</td>
+                </tr>
+              </th:block>
+              <th:block th:unless="${#lists.isEmpty(types)}" th:each="type : ${types}">
+                <tr>
+                  <td class="num-td">[[${type.typeNum}]]</td>
+                  <td>[[${type.typeName}]]</td>
+                  <td>
+                    <input type="button" class="btn btn-outline-success btn-button" value="수정" onclick="goRegFx(this)">
+                    <input type="button" class="btn btn-outline-primary btn-button" value="삭제" onclick="delBoardType(this)">
+                  </td>
+                </tr>
+              </th:block>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</th:block>
+
+<th:block layout:fragment="content_js">
+  <!-- html 파일이 열릴때 같이 실행되는 js -->
+  <script src="/js/content/admin/board_controll.js"></script>
+</th:block>
+</html>

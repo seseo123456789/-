@@ -1,0 +1,14 @@
+    
+    
+    .table-blank{width: 100%; font-size: 20px; border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse;}
+    .tr-row:hover {cursor:pointer;  background-color: rgb(251, 251, 255); }
+    .listBtn{color: gray; --bs-btn-padding-y: .18rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem; 
+        --bs-btn-hover-border-color:rgb(179, 179, 180);  --bs-btn-border-color:rgb(179, 179, 180); --bs-btn-bg: rgb(212, 217, 223);--bs-btn-hover-bg:rgb(212, 217, 223);}
+    
+    .thead-top{border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse; background-color: #36ad6442; font-size: 16px; border-top: 3px solid rgba(22, 121, 55, 0.438); border-bottom: 3px solid rgba(22, 121, 55, 0.438);} 
+    .th-noback{border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse; border-top: 3px solid rgba(22, 121, 55, 0.438); border-bottom: 3px solid rgba(22, 121, 55, 0.438);}        
+    th {border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse;}
+    .td-line, .tr-line , .tr-rowTwo {border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse;}
+
+    /* 모달 */
+    tr, td {border: 2px solid rgba(58, 111, 228, 0.281);} 

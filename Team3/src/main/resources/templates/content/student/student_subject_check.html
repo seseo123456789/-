@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드작성 -->
+
+
+    <style>
+        th, tr, td{border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse;  }
+        th, .testTd{text-align: center;}
+        th,.classTd{--bs-table-bg:  #36ad6442;}
+    </style>
+
+<div class="row">
+    <div class="col">
+            <div class="row mb-2" style="width: 800px;">
+                <div class="col-6">                    
+                    <h4><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                        </svg> 나의 성적상세내역</strong></h4>
+                </div>
+                <div class="col-6" style="text-align: end;">
+                    <input type="button" class="btn btn-primary" value="목록가기" th:onclick="goSearchList([[${stuInfoService.memberId}]])">
+                </div>
+            </div>
+
+        <div class="row">
+            <div class="col">
+
+                    <div class="row" style="width: 800px;">
+                        <div class="col">
+                            
+                            <table class="table" style="width: 800px;">
+                                <colgroup>
+                                    <col width="35%">
+                                    <col width="65%">                                    
+                                </colgroup>
+                                <tr>
+                                    <th>수강명</th>
+                                    <td>[[${subMyScores[0].className}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>아이디</th>
+                                    <td>[[${stuInfoService.memberId}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>이름</th>
+                                    <td>[[${stuInfoService.memberName}]]</td>
+                                </tr>          
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row" style="width: 800px;">
+                        <div class="col">
+                            <table class="table" style="width: 800px;">
+                                <colgroup>
+                                    <col width="35%">
+                                    <col width="65%">
+                                    
+                                </colgroup>
+                                <tr>
+                                    <th>시험명(시험번호)</th>
+                                    <td>[[${subMyScores[0].testOneVo.testName}]](<span>[[${subMyScores[0].testOneVo.testNum}]]</span>)</td>
+                                </tr>
+                                <tr>
+                                    <th>시험일</th>
+                                    <td>[[${subMyScores[0].testOneVo.testDate}]]</td>
+                                </tr>
+                                <tr>
+                                    <th>과목수</th>                                   
+                                        <td>[[${subMyScores[0].testOneVo.subCnt}]]</td>                                   
+                            </table>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+<!-- 과목있을때 -->
+        <div class="row" style="width: 800px;">
+            <div class="col">
+
+                <table class="table" style="width: 800px;">                    
+                        <colgroup>
+                            <col width="15%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="25%">
+                        </colgroup>
+                    <tr class="classTd">
+                        <th>과목번호</th>
+                        <th>과목명</th>
+                        <th>점수</th>
+                        <th>등급</th>
+                        <th>과목평균</th>
+                    </tr>
+                    <tr class="testTd" th:each=" mySub: ${subMyScores}">
+                        <td>[[${mySub.testSubOneVO.subTestNum}]]</td>
+                        <td>[[${mySub.testSubOneVO.subName}]]</td>
+                        <td class="score">[[${mySub.score}]]</td>
+                        <td>[[${mySub.level}]]</td>
+                        <td>[[${mySub.subAvg}]]</td>
+                    </tr>
+                    <tr class="testTd">
+                        <th>총점</th>
+                        <td colspan="3">
+                            
+                            &nbsp; [[${subMyScores[0].subSum}]] / &nbsp; [[${subMyScores[0].testOneVo.totalSubMax}]]
+                        
+                        </td>
+                        <td>[[${subMyScores[0].subSumAvg}]]</td>
+                    </tr>
+                </table>
+            
+            </div>
+            <div class="col">
+
+                <div class="row" style="width: 300px; margin-left: 2px;">
+                    <div class="col" style="background-color:rgb(23, 141, 156); color: white;">
+                        <strong><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 20 20">
+                            <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+                        </svg>성적조회 TIP's</strong>
+                    </div>
+                </div>
+                
+
+                <table class="table text-center" style="width: 800px;">
+
+                    <tr style="text-align: start; font-size: 15px;">
+                        
+                        <td>
+                            - 원점수로 석차를 세우고 해당 석체에 맞는 등급과 성적을 산출하여 최종점수를 부여합니다. <br>
+                            - 평가인정 학습과정 운영지침에 의거하여 A등급 20~30%, B등급 30~40%,C등급이하 30~50% 부여가 가능합니다. <br>
+                            - 과목별 이의신청 처리 결과에 따라 1차 괴총성적 열람 및 이의신청시 확인한 성적은 최정성적 확정기간에성적이  <br>
+                            &nbsp; &nbsp;변동될 수 있습니다.
+
+
+                        </td>
+                        
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<script>
+function goSearchList(memberId){
+    location.href='/test/stuTestAdmin?memberId='+memberId;
+}
+
+</script>
+
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <!-- <script src="/"></script> -->
+</th:block>
+</html>

@@ -1,0 +1,6 @@
+
+    .trLine, th{border: 1px solid rgba(22, 121, 55, 0.438);  border-collapse: collapse; border-top: 3px solid rgba(22, 121, 55, 0.438); border-bottom: 3px solid rgba(22, 121, 55, 0.438);}
+    th {--bs-table-bg:  #36ad6442; text-align: center;}
+
+    .box-line {border: 1px solid rgb(23, 141, 156);}
+    

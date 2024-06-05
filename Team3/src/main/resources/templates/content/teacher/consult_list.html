@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <link rel="stylesheet" href="/css/content/teacher/homework.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성-->
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                    <h3><strong>반별 상담관리</strong></h3>
+                </div>
+            </div>
+            
+            <div class="row  mt-4" style="width:1000px;">
+                <div class="col">
+                    <table class="table" style="text-align: center; vertical-align: middle;">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="25%">
+                            <col width="25%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <td colspan="5">
+                                    <h4><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                        <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                                        </svg> 금일 상담 수강생 목록</strong></h4>
+                                </td>
+                            </tr>
+                            <tr class="trLine">
+                                <th>No</th>
+                                <th>수강명</th>
+                                <th>수강생명</th>
+                                <th>상담 예정일</th>
+                                <th></th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody> <!-- 반복문 예정 -->
+                            <tr th:each="todayconsult, state:${todayConsultList}">
+                                <td>[[${todayConsultList.size-state.index}]]</td>
+                                <td>[[${todayconsult.clsVO.className}]]</td>
+                                <td>[[${todayconsult.memberVO.memberName}]]</td>
+                                <td>[[${todayconsult.consultDate}]]</td>
+                                <td>
+                                    <input type="hidden" th:value="${todayconsult.consultNum}">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="crystal_consult(this)">수정</button>
+                                    <button class="btn btn-outline-danger" type="button" onclick="delete_consult(this)">삭제</button>
+                                    <button class="btn btn-outline-success" type="button" onclick="save_consultContent(this)">작성</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tr th:if="${todayConsultList.size == 0}">
+                            <td colspan="5">금일 상담이 예정된 학생이 없습니다.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            
+        
+        <div class="row  mt-5" style="width:1000px;">
+            <div class="col">
+                <table class="table" style="text-align: center; vertical-align: middle;">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="25%">
+                        <col width="25%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <td colspan="5">
+                                <h4><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                                    </svg> 상담 예정 수강생 목록</strong></h4>
+                            </td>
+                        </tr>
+                        <tr class="trLine">
+                            <th>No</th>
+                            <th>수강명</th>
+                            <th>수강생명</th>
+                            <th>상담 예정일</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody th:each="willconsult, state:${willConsultList}"> <!-- 반복문 예정 -->
+                        <tr>
+                            <td>[[${willConsultList.size-state.index}]]</td>
+                            <td>[[${willconsult.clsVO.className}]]</td>
+                            <td>[[${willconsult.memberVO.memberName}]]</td>
+                            <td>[[${willconsult.consultDate}]]</td>
+                            <td>
+                                <input type="hidden" th:value="${willconsult.consultNum}">
+                                <button class="btn btn-outline-secondary" type="button" onclick="crystal_consult(this)">수정</button>
+                                <button class="btn btn-outline-danger" type="button" onclick="delete_consult(this)">삭제</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tr th:if="${willConsultList.size == 0}">
+                        <td colspan="5">상담이 예정된 학생이 없습니다.</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+            
+        
+        <div class="row mt-5" style="width:1000px;">
+            <div class="col">
+                <table class="table" style="text-align: center; vertical-align: middle;">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="25%">
+                        <col width="25%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <td colspan="5">
+                                <h4><strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                                    </svg> 상담기록 미작성 목록</strong></h4>
+                            </td>
+                        </tr>
+                        <tr class="trLine">
+                            <th>No</th>
+                            <th>수강명</th>
+                            <th>수강생명</th>
+                            <th>상담 일</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody th:each="endconsult, state:${endConsultList}"> <!-- 반복문 예정 -->
+                        <tr>
+                            <td>[[${endConsultList.size-state.index}]]</td>
+                            <td>[[${endconsult.clsVO.className}]]</td>
+                            <td>[[${endconsult.memberVO.memberName}]]</td>
+                            <td>[[${endconsult.consultDate}]]</td>
+                            <td>
+                                <input type="hidden" th:value="${endconsult.consultNum}">
+                                <button class="btn btn-outline-secondary" type="button" onclick="crystal_consult(this)">수정</button>
+                                <button class="btn btn-outline-danger" type="button" onclick="delete_consult(this)">삭제</button>
+                                <button class="btn btn-outline-success" type="button" onclick="save_consultContent(this)">작성</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tr th:if="${endConsultList.size == 0}">
+                        <td colspan="5">상담 내용이 미작성된 학생이 없습니다.</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+            
+        </div>
+    </div>
+    <form id="C_csNum" action="/consult/updateConsult" method="post">
+        <input type="hidden" name="consultNum" value="1">
+    </form>
+    <form id="D_csNum" action="/consult/deleteConsult" method="post">
+        <input type="hidden" name="consultNum" id="csn" value="1">
+        <input type="hidden" name="title" id="cst" value="aaa">
+    </form>
+
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@모달@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 5px solid rgb(23, 141, 156);">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                    <strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                        </svg>  
+                        상담일정 수정
+                    </strong>                     
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="buttonSubmit" action="/consult/updateConsult" method="post">
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="crystal()">수정</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    <script src="/js/teacher/consult_list.js"></script>
+</th:block>
+</html>

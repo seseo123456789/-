@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragment/integrated_layout}">
+
+<th:block layout:fragment="content_css">
+  <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+  <link rel="stylesheet" href="/css/content/student/stu_info.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+  <!-- html 코드 작성-->
+  <div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                <h3><strong>마이 페이지</strong></h3>
+            </div>
+        </div>
+        <div class="row mt-4 stu_info_main_dev" style="margin-left:10px ;">
+          <div class="col-9">
+            <div class="row green text_center radius border_bottom font_heavy">
+              <div class="col-4 border_right">이 름</div>
+              <div class="col-4 border_right">이 메 일</div>
+              <div class="col-4">전 화 번 호</div>
+            </div>
+            <div class="row text_center border_bottom">
+              <div class="col-4 brr">[[${member.memberName}]]</div>
+              <div class="col-4 brr">[[${member.memberEmail}]]</div>
+              <div class="col-4">[[${member.memberTel}]]</div>
+            </div>
+            <div class="row text_center green border_bottom font_heavy">
+              <div class="col">
+                스&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;케&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;줄</div>
+            </div>
+            <div class="row yeon_green text_center border_bottom">
+              <div class="col-4 border_right">예정 상담</div>
+              <div class="col-4 border_right">예정 과제</div>
+              <div class="col-4">예정 시험</div>
+            </div>
+            <div class="row text_center border_bottom">
+              <div class="col-4">
+                <th:block th:if="${consult.size == 0}">
+                  <div class="row height60">
+                    <div class="col">
+                      예정된 상담이 없습니다.
+                    </div>
+                  </div>
+                </th:block>
+                <th:block th:unless="${consult.size == 0}">
+                  <th:block th:each="cs : ${consult}">
+                    <div class="row height60">
+                      <div class="col">
+                        [[${cs.consultDate}]] / [[${cs.clsVO.className}]]
+                      </div>
+                    </div>
+                  </th:block>
+                </th:block>
+              </div>
+              <div class="col-4">
+                <th:block th:if="${homework.size == 0}">
+                  <div class="row height60">
+                    <div class="col">
+                      예정된 과제가 없습니다.
+                    </div>
+                  </div>
+                </th:block>
+                <th:block th:unless="${homework.size == 0}">
+                  <th:block th:each="hw : ${homework}">
+                    <div class="row height60">
+                      <div class="col">
+                        [[${hw.hwName}]] / [[${hw.clsVO.className}]]<br>
+                        [[${hw.hwSdate}]] ~ [[${hw.hwEdate}]]
+                      </div>
+                    </div>
+                  </th:block>
+                </th:block>
+              </div>
+              <div class="col-4">
+                <th:block th:if="${test.size == 0}">
+                  <div class="row height60">
+                    <div class="col">
+                      예정된 시험이 없습니다.
+                    </div>
+                  </div>
+                </th:block>
+                <th:block th:unless="${test.size == 0}">
+                  <th:block th:each="ts : ${test}">
+                    <div class="row height60">
+                      <div class="col">
+                        [[${ts.testName}]] / [[${ts.classOneVo.className}]]<br>
+                        [[${ts.testDate}]]
+                      </div>
+                    </div>
+                  </th:block>
+                </th:block>
+              </div>
+            </div>
+            <div class="row green text_center border_bottom font_heavy">
+              <div class="col">
+                출결 현황
+              </div>
+            </div>
+            <th:block th:if="${atd.size == 0}">
+              <div class="row text_center border_bottom">
+                <div class="col">
+                  진행중인 수업이 없습니다.
+                </div>
+              </div>
+            </th:block>
+            <th:block th:unless="${atd.size == 0}">
+              <div class="row text_center border_bottom yeon_green">
+                <div class="col-2 brr">학급</div>
+                <div class="col-2 brr">출석</div>
+                <div class="col-2 brr">결석</div>
+                <div class="col-2 brr">지각</div>
+                <div class="col-2 brr">조퇴</div>
+                <div class="col-2">보강</div>
+              </div>
+              <th:block th:each="at:${atd}">
+                <div class="row text_center border_bottom">
+                  <div class="col-2 brr">[[${at.className}]]</div>
+                  <div class="col-2 brr">[[${at.check}]]</div>
+                  <div class="col-2 brr">[[${at.absent}]]</div>
+                  <div class="col-2 brr">[[${at.tardy}]]</div>
+                  <div class="col-2 brr">[[${at.early}]]</div>
+                  <div class="col-2">[[${at.supple}]]</div>
+                </div>
+              </th:block>
+            </th:block>
+          </div>
+          <div class="col-3">
+            <div class="row">
+              <div class="col">
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </div>      
+</th:block>
+
+<th:block layout:fragment="content_js">
+  <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+  <script src="/"></script>
+</th:block>
+
+</html>

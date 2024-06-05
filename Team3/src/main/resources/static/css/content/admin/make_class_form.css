@@ -1,0 +1,25 @@
+h2{
+  font-weight: bold; 
+  margin-top: 8px;
+}
+
+.td-point{
+  background-color: #25ac302f;
+}
+
+.form-control::placeholder{
+  color: rgb(185, 185, 185);
+}
+
+.form-control2{
+  width: 180px;
+  padding: 10px; 
+  border: .5px solid rgb(228, 228, 228); 
+  border-radius: 6px;
+  height:35px;
+  text-align: center;
+}
+
+.form-select{
+  padding: 0.25rem 1.20rem 0.25rem 0.75rem;
+}

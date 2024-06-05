@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <link rel="stylesheet" href="/css/content/teacher/homework.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성-->
+    <form action="/homework/addHomeworkResult" method="post">
+        <div class="row">
+            <div class="col">
+                <div class="row" >
+                    <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                        <h3><strong>반별 과제생성</strong></h3>
+                    </div>
+                </div>
+
+                <div class="row mt-5" style="width: 1000px;">
+                    <div class="col">
+                        <table class="table" style="text-align: center; vertical-align: middle;">
+                            <colgroup>
+                                <col width="20%">
+                                <col width="40%">
+                                <col width="20%">
+                                <col width="20%">
+                            </colgroup>
+                            <thead>
+                                <tr class="trLine">
+                                    <th>
+                                        강의 이름
+                                    </th>
+                                    <th>
+                                        과제이름
+                                    </th>
+                                    <th>
+                                        과제 시작일
+                                    </th>
+                                    <th>
+                                        과제 종료일
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="height: 80px;">
+                                    <td>
+                                        <select name="classNum" class="form-select box-line">
+                                            <th:block th:each="class:${classList}" >
+                                                <option th:value="${class.classNum}">[[${class.className}]]</option>
+                                            </th:block>
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="hwName" class="form-control box-line" style="text-align: center;"></td>
+                                    <td><input type="date" name="hwSdate" class="form-control box-line" style="text-align: center;"></td>
+                                    <td><input type="date" name="hwEdate" class="form-control box-line" style="text-align: center;"></td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-3" style="width: 1000px; text-align: center;">
+                    <div class="col">
+                        <input class="btn btn-outline-primary" type="submit" value="만들기">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    <!-- <script src="/"></script> -->
+</th:block>
+</html>

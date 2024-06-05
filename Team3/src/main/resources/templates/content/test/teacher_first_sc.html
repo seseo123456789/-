@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성-->
+    <!-- 선생님!!! 여기가 팀파일 -->
+    
+    <style>
+    tr, td {border: 1px solid rgba(22, 121, 55, 0.438);}
+    .thead-top{border-top: 3px solid rgba(22, 121, 55, 0.438); border-bottom: 3px solid rgba(22, 121, 55, 0.438);}  
+
+    </style>
+    
+    <div>
+
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                        <h3><strong>성적처리</strong><h3>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col" style="font-size:20px;">
+                        <strong><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-caret-right-square" viewBox="0 0 20 20">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                            <path d="M5.795 12.456A.5.5 0 0 1 5.5 12V4a.5.5 0 0 1 .832-.374l4.5 4a.5.5 0 0 1 0 .748l-4.5 4a.5.5 0 0 1-.537.082"/>
+                            </svg> 성적처리 수강반 목록</strong>
+                    </div>
+                </div>
+                
+                <div class="row mt-4" style="width:1000px;">
+                    <div class="col">
+                        <table class="table text-center">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="25%">
+                                <col width="15%">
+                                <col width="30%">               
+                                <col width="20%">
+                            </colgroup>
+                            <tr class="thead-top table-success">
+                                <td><strong>수강번호</strong></td>
+                                <td><strong>수강명</strong></td>
+                                <td><strong>현인원/정원</strong></td>
+                                <td><strong>수강기간</strong></td>
+                                <td><strong>수강 상태</strong></td>
+                            </tr>
+    
+                            <tr th:each= "classInfo : ${classList}">
+                                <td>[[${classInfo.classNum}]]</td>
+                                <td style="cursor:pointer;"><span class="point-span" th:onclick="goScore([[${classInfo.classNum}]])" >[[${classInfo.className}]]</span></td>
+                                <td> [[${classInfo.stuCnt}]] /[[${classInfo.classPersonnel}]]</td> 
+                                <td>[[${classInfo.classSdate}]]-[[${classInfo.classEdate}]]</td>
+                                <td>[[${classInfo.teacherVO.strWork}]]</td>                                                               
+                            </tr>                           
+                        </table>
+                    </div>
+                </div>
+                
+                    
+                    
+            </div>
+        </div>
+        
+
+        <div class="row"  style="width: 1000px;">
+            <div class="col">
+
+                <div class="row" style="width: 300px; margin-left: 2px;">
+                    <div class="col" style="background-color:rgb(23, 141, 156); color: white;">
+                        <strong><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 20 20">
+                            <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+                            </svg>성적조회 TIP's</strong>
+                    </div>
+                </div>
+                
+
+                <table class="table text-center">
+                    
+                    <tr style="text-align: start; font-size: 15px; border: 2px solid rgba(22, 121, 55, 0.438);">
+                        
+                        <td>
+                            - 수강반명을 클릭하면 해당 반의 시험목록이 연결됩니다. <br>
+                            - 수강반의 해당 학생 상세정보는 학급> 학생정보조회를 확인하세요.<br>
+                            - 시험별, 과목별 이의신청 처리결과에 따라 최종성적은 변동될 수 있습니다.
+
+
+                        </td>
+                        
+                    </tr>
+                                    
+                </table>
+            </div>
+        </div>
+</div>
+
+<script>
+
+    function goScore(classNum){
+        location.href='/test/scoreTeacher?classNum='+classNum;
+    };
+
+</script>
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    
+
+
+</th:block>
+</html>
+
+
+

@@ -1,0 +1,33 @@
+.stu_info_main_dev div{
+  padding: 3px;
+}
+.green{
+  background-color: #36ad6442;
+}
+.yeon_green{
+  background-color: #36ad6421;
+}
+.text_right{
+  text-align: right;
+}
+.text_center{
+  text-align: center;
+}
+.radius{
+  border-radius: 10px 10px 0 0;
+}
+.border_bottom{
+  border-bottom: 1px solid rgb(22, 121, 55);
+}
+.height60{
+  height: 60px;
+}
+.border_right{
+  border-right: 2px solid #303c7ecc;
+}
+.brr{
+  border-right: 2px solid #303c7e99;
+}
+.font_heavy{
+  font-weight: bold;
+}

@@ -1,0 +1,45 @@
+.input-tag{
+  width: 180px;
+  padding: 5px; 
+  border: .5px solid rgb(228, 228, 228); 
+  border-radius: 6px;
+  height:35px;
+  text-align: center;
+}
+
+.tbl-div{
+  margin: 0 auto;
+  width: 80%;
+}
+
+.btn-div{
+  margin-left: 80%;
+  margin-right: 10%;
+}
+
+.form-select{
+  margin-left: 10%;
+  width: 80%;
+}
+
+.table-div{
+  margin: 0 auto;
+
+}
+
+.table-div >table{
+  margin: 0 auto;
+  width: 40%;
+}
+
+.btn-button{
+  height: 35px;
+}
+
+.the-line{
+  border-bottom: 1px solid rgb(205, 205, 205);
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-bottom: 2%;
+  margin-top: 2%;
+}

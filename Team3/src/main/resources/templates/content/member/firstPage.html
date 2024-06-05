@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{fragment/integrated_layout}">
+
+<th:block layout:fragment="content_css">
+  <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+  <link rel="stylesheet" href="/css/content/firstPage.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+  <!-- html 코드 작성-->
+  <!-- 로그인 안했을 때 뜨는 창 -->
+  <th:block sec:authorize="isAnonymous()">
+    <div class="row">
+      <div class="col">
+
+        <div class="row" style="--bs-gutter-x: 0rem;">
+          <div class="col" style="width: 1296px; background-color: #0e473b; ">
+            <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="height: 550px;">
+              <div class="carousel-inner">
+
+                <div class="carousel-item active" data-bs-interval="9000">
+                  <img src="/images/aca.jpg" style="height: 550px; width: 200px;" class="d-block w-100" alt="...">
+                  <div class="carousel-caption d-none d-md-block" style="text-align: start;">
+                    <strong><span style="font-size: 30px;">스스로 관리하는 학생활동 기록</span></strong>
+
+                  </div>
+                </div>
+
+                <div class="carousel-item" data-bs-interval="9000">
+                  <img src="/images/book.jpg" style="height: 550px; width: 200px;" class="d-block w-100" alt="...">
+                  <div class="carousel-caption d-none d-md-block" style="text-align: start;">
+                    <strong><span style="font-size: 30px;">입학부터 졸업까지 체계적인 성적관리</span></strong>
+
+                  </div>
+                </div>
+
+                <div class="carousel-item" data-bs-interval="9000">
+                  <img src="/images/study.jpg" style="height: 550px; width: 200px;" class="d-block w-100" alt="...">
+                  <div class="carousel-caption d-none d-md-block" style="text-align: start;">
+                    <strong><span style="font-size: 30px;">효율적 학급경영을 위한 관리</span></strong>
+
+                  </div>
+                </div>
+
+                <div class="carousel-item" data-bs-interval="9000">
+                  <img src="/images/math.jpg" style="height: 550px; width: 200px;" class="d-block w-100" alt="...">
+                  <div class="carousel-caption d-none d-md-block" style="text-align: start;">
+                    <strong><span style="font-size: 30px;">수요자 중심의 맞춤형 자습관리</span></strong>
+
+                  </div>
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="background-color: #0e473b; margin-left: .5px; width: 1272px; height: 242px;">
+          <div class="col-3">
+            <img src="/images/logo_white_onlyimg.png"
+              style="height: 110px; width: 250px; margin-top: 70px; margin-left:70px;">
+          </div>
+
+          <div class="col-8" style=" color:white; font-size: 34px; font-weight: 600;">
+            <div style="margin-left:55px; margin-top: 60px;">
+              그린 아카데미 <span style="font-size: 40px;">학사정보시스템</span>에 <br><span style="margin-left: 480px;">오신것을
+                환영합니다.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </th:block>
+  <!-- 로그인 했을 때 뜨는 창 -->
+  <th:block sec:authorize="isAuthenticated()">
+    <div class="row">
+      <div class="col-6">
+        <div class="row" style="padding: 8px;">
+          <div class="col">
+            <div class="row mb-3 justify-content-start">
+              <div class="col-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                  class="bi bi-chat-right-text-fill text-success" viewBox="0 0 16 16">
+                  <path
+                    d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353zM3.5 3h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1m0 2.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1" />
+                </svg>
+              </div>
+              <div class="col-5 text-start">
+                <h4 style="font-weight: bold;">학사일정</h4>
+              </div>
+              <div class="col-6 text-end">
+                <a class="icon-link link-secondary icon-link-hover" style="--bs-link-hover-color-rgb: 0, 0, 0;"
+                  onclick="location.href='/board/noticeListStu?typeNum=1'">
+                  바로가기
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="row mb-4" style="position: relative;">
+              <table class="table table-hover text-center align-middle">
+                <colgroup>
+                  <col width="10%">
+                  <col width="45%">
+                  <col width="20%">
+                  <col width="15%">
+                </colgroup>
+                <thead class="table-group-divider border-success">
+                  <tr>
+                    <td>No</td>
+                    <td class="border-end border border-success">제목</td>
+                    <td class="border-end border border-success">작성자</td>
+                    <td>조회수 </td>
+                  </tr>
+                </thead>
+                <tbody class="table-group-divider border-success">
+                  <!-- 게시글이 없을 때 -->
+                  <th:block th:if="${#lists.isEmpty(noticeList)}">
+                    <tr>
+                      <td colspan="4"> 조회된 게시글이 없습니다. </td>
+                    </tr>
+                  </th:block>
+                  <!-- 게시글이 있을 때 조회 -->
+                  <th:block th:unless="${#lists.isEmpty(noticeList)}">
+                    <tr th:each="notice, state : ${noticeList}">
+                      <td>[[${searchVO.displayDataCnt - state.index}]]</td>
+                      <!-- <td>[[${totalDataCnt - (searchVO.displayDataCnt * (searchVO.nowPage - 1) ) - state.index}]]</td> -->
+                      <td class="border-end border border-success text-start">
+                        <div class="text-over-cut">
+                          <a style="text-decoration: none; color: black;"
+                            th:href="@{/board/noticeDetail(boardNum=${notice.boardNum})}">
+                            [[${notice.boardTitle}]]
+                          </a>
+                          <th:block
+                            th:if="${notice.imgList[0].originFileName != null AND notice.imgList[0].originFileName != ''}">
+                            <th:block th:if="${notice.imgList.size() == 1}">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                                class="bi bi-image" viewBox="0 0 16 16">
+                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                                <path
+                                  d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z" />
+                              </svg>
+                            </th:block>
+                          </th:block>
+                        </div>
+                      </td>
+                      <td class="border-end border border-success">[[${notice.memberId}]]</td>
+                      <td>[[${notice.boardCnt}]]</td>
+                    </tr>
+                  </th:block>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="row text-center" style="position: absolute; top: 53%; left:31%;">
+                  <div class="col border border-secondary-subtle p-2"
+                    style="height: 200px; width: 200px; margin-right: 2px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="currentColor"
+                      class="bi bi-telephone text-success mt-4 mb-2" viewBox="0 0 16 16">
+                      <path
+                        d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z" />
+                    </svg>
+                    <div class="text-center mb-2" style="font-weight: bold">연락처</div>
+                    <div class="text-center">TEL | 052-293-9393</div>
+                    <div class="text-center">FAX | 052-293-9394</div>
+                  </div>
+                  <div class="col border border-secondary-subtle p-2"
+                    style="height: 200px; width: 200px; margin-left: 2px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="currentColor"
+                      class="bi bi-geo text-success mt-4 mb-2" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M8 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6M4 4a4 4 0 1 1 4.5 3.969V13.5a.5.5 0 0 1-1 0V7.97A4 4 0 0 1 4 3.999zm2.493 8.574a.5.5 0 0 1-.411.575c-.712.118-1.28.295-1.655.493a1.3 1.3 0 0 0-.37.265.3.3 0 0 0-.057.09V14l.002.008.016.033a.6.6 0 0 0 .145.15c.165.13.435.27.813.395.751.25 1.82.414 3.024.414s2.273-.163 3.024-.414c.378-.126.648-.265.813-.395a.6.6 0 0 0 .146-.15l.015-.033L12 14v-.004a.3.3 0 0 0-.057-.09 1.3 1.3 0 0 0-.37-.264c-.376-.198-.943-.375-1.655-.493a.5.5 0 1 1 .164-.986c.77.127 1.452.328 1.957.594C12.5 13 13 13.4 13 14c0 .426-.26.752-.544.977-.29.228-.68.413-1.116.558-.878.293-2.059.465-3.34.465s-2.462-.172-3.34-.465c-.436-.145-.826-.33-1.116-.558C3.26 14.752 3 14.426 3 14c0-.599.5-1 .961-1.243.505-.266 1.187-.467 1.957-.594a.5.5 0 0 1 .575.411" />
+                    </svg>
+                    <div class="text-center mb-2" style="font-weight: bold">오시는 길</div>
+                    <div class="text-center">(45667)</div>
+                    <div class="text-center">울산광역시 남구 문수로296, 7층</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row" style="padding: 8px;">
+          <div class="col">
+            <div class="row mb-3 justify-content-start">
+              <div class="col-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                  class="bi bi-calendar-week text-success" viewBox="0 0 16 16">
+                  <path
+                    d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
+                  <path
+                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                </svg>
+              </div>
+              <div class="col-5 text-start">
+                <h4 style="font-weight: bold;">학사일정</h4>
+              </div>
+              <div class="col-6 text-end">
+                <a class="icon-link link-secondary icon-link-hover" style="--bs-link-hover-color-rgb: 0, 0, 0;"
+                  href="#">
+                  바로가기
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                      d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div id='calendar-container' style="--fc-today-bg-color: rgba(36, 173, 24, 0.09);">
+                  <div id='calendar'></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+
+
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+  <script src="/js/firstPage.js"></script>
+</th:block>
+
+</html>

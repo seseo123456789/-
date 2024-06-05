@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="admin">
+    <resultMap id="operator" type="com.green.Team3.admin.vo.OperatorVO">
+        <id     column="OPER_NUM"               property="operNum"/>
+        <result column="OPER_PAY"               property="operPay" />
+        <result column="IS_PAY"                 property="isPay" />
+        <result column="MEMBER_ID"              property="memberId" />
+        <result column="PAY_DAY"                property="payDay" />
+        <result column="CLASS_NUM"              property="classNum" />
+        <result column="TOTAL_SALES"            property="totalSales" />
+        <result column="PAY_YEAR"               property="payYear" />
+        <result column="PAY_MONTH"               property="payMonth" />
+        <result column="OPER_NUM_CNT"           property="operNumCnt" />
+    </resultMap>
+
+    <!-- 회원 권한 수정 -->
+    <update id="updateRoll">
+        UPDATE MEMBER
+        SET MEMBER_ROLL = #{memberRoll}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+
+    <!-- Teacher 테이블 insert -->
+    <insert id="insertTeacher">
+        INSERT INTO TEACHER (
+            MEMBER_ID
+        )
+        VALUES (
+            #{memberId}
+        )
+    </insert>
+
+    <!-- 회원 인적사항 변경 -->
+    <update id="changeMemberData">
+        UPDATE MEMBER
+        SET MEMBER_NAME = #{memberName}
+            , MEMBER_TEL = #{memberTel}
+            , MEMBER_EMAIL = #{memberEmail}
+            , POST_CODE = #{postCode}
+            , MEMBER_ADDR = #{memberAddr}
+            , ADDR_DETAIL = #{addrDetail}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+
+    <!-- 반 생성 -->
+    <insert id="makeCls">
+        INSERT INTO CLASS_INFO (
+            CLASS_NAME
+            , CLASS_PAYMENT
+            , CLASS_PERSONNEL
+            , CLASS_SDATE
+            , CLASS_EDATE
+            , TEACHER_NUM
+        ) VALUES (
+            #{className}
+            , #{classPayment}
+            , #{classPersonnel}
+            , #{classSdate}
+            , #{classEdate}
+            , #{teacherNum}
+        )
+    </insert>
+
+    <!-- 근무 상태 변경 재직/퇴직 -->
+    <update id="changeAttendance">
+        UPDATE TEACHER
+        SET TEACHER_WORK = #{teacherWork}
+        WHERE TEACHER_NUM = #{teacherNum}
+    </update>
+
+    <!-- 선택한 선생의 강의 목록 조회 -->
+    <select id="teacherClassList" resultMap="clsMapper.cls">
+        SELECT
+            CLASS_NUM,
+            CLASS_NAME,
+            CLASS_SDATE,
+            CLASS_EDATE,
+            CLASS_ENTER,
+            CLASS_STATUS,
+            MEMBER_NAME AS TEACHER_NAME,
+            CI.TEACHER_NUM
+        FROM member M INNER JOIN TEACHER T
+        ON M.MEMBER_ID = T.MEMBER_ID
+        INNER JOIN class_info CI
+        ON T.TEACHER_NUM = CI.TEACHER_NUM
+        WHERE M.MEMBER_ID = #{memberId}
+        AND CLASS_EDATE > NOW()
+    </select>
+
+    <!-- 등록된 선생님 이름 목록 조회 -->
+    <select id="selectTeacherName" resultMap="teacher.teacherInfo">
+        SELECT TEACHER_NUM
+            , MEMBER_NAME
+            , M.MEMBER_ID
+        FROM TEACHER T
+        INNER JOIN MEMBER M
+        ON T.MEMBER_ID = M.MEMBER_ID
+    </select>
+
+    <!-- 반에서 정보 수정 -->
+    <update id="updateClass">
+        UPDATE CLASS_INFO
+        SET CLASS_NAME =#{className}
+            , CLASS_PAYMENT = #{classPayment}
+            , CLASS_PERSONNEL = #{classPersonnel}
+            , CLASS_SDATE = #{classSdate}
+            , CLASS_EDATE = #{classEdate}
+            , TEACHER_NUM = #{teacherNum}
+        WHERE CLASS_NUM = #{classNum}
+    </update>
+
+    <!-- 수강 신청 시 INSERT 문 -->
+    <insert id="insertOperator">
+        INSERT INTO operator(
+            OPER_PAY
+            , PAY_DAY
+            , MEMBER_ID
+            , CLASS_NUM
+            , OPER_NUM
+        ) VALUES (
+            (SELECT CLASS_PAYMENT
+            FROM class_info
+            WHERE CLASS_NUM = #{classNum})
+            , (SELECT SUBSTRING(NOW(), 1, 10))
+            , #{memberId}
+            , #{classNum}
+            , #{operNum}
+        )
+    </insert>
+
+    <!-- 결제 성공 시 update문 -->
+    <update id="successPayment">
+        UPDATE OPERATOR
+        SET PAY_DAY = (SELECT SUBSTRING(NOW(), 1, 10))
+            , IS_PAY = 'Y'
+        WHERE OPER_NUM = #{operNum}
+    </update>
+
+    <!-- 결제 성공 시 필요 데이터 select -->
+    <select id="findNames" resultMap="clsMapper.cls">
+        SELECT M.MEMBER_ID
+            , MEMBER_NAME
+            , MEMBER_ROLL
+            , O.OPER_NUM
+            , CI.CLASS_NUM
+            , CLASS_NAME
+            , OPER_PAY
+            , TEACHER_NUM
+            , (SELECT MEMBER_NAME
+                FROM MEMBER
+                INNER JOIN TEACHER T
+                ON MEMBER.MEMBER_ID = T.MEMBER_ID
+                WHERE TEACHER_NUM = CI.TEACHER_NUM) AS TEACHER_NAME
+        FROM CLASS_INFO CI INNER JOIN OPERATOR O
+        ON CI.CLASS_NUM = O.CLASS_NUM
+        INNER JOIN MEMBER M
+        ON M.MEMBER_ID = O.MEMBER_ID
+        WHERE OPER_NUM = #{operNum}
+    </select>
+
+    <!-- 수강 신청을 위한 전체 반 목록 조회 -->
+    <select id="regClasses" resultMap="clsMapper.cls">
+        SELECT CI.CLASS_NUM
+            , CLASS_NAME
+            , CLASS_SDATE
+            , CLASS_EDATE
+            , CLASS_ENTER
+            , CLASS_PAYMENT
+            , CLASS_STATUS
+            , CI.TEACHER_NUM
+            , CLASS_PERSONNEL
+            , CLASS_PAYMENT
+            , CLASS_ENTER
+            , (SELECT COUNT(OPERATOR.MEMBER_ID)
+                FROM operator
+                INNER JOIN MEMBER
+                ON MEMBER.MEMBER_ID = OPERATOR.MEMBER_ID
+                WHERE CLASS_NUM = CI.CLASS_NUM) AS STU_CNT
+            , (SELECT MEMBER_NAME
+                FROM MEMBER
+                INNER JOIN TEACHER T
+                ON MEMBER.MEMBER_ID = T.MEMBER_ID
+                WHERE TEACHER_NUM = CI.TEACHER_NUM) AS TEACHER_NAME
+        FROM class_info CI
+        WHERE CLASS_PERSONNEL - (SELECT COUNT(OPERATOR.MEMBER_ID)
+                                FROM operator
+                                INNER JOIN MEMBER
+                                ON MEMBER.MEMBER_ID = OPERATOR.MEMBER_ID
+                                WHERE CLASS_NUM = CI.CLASS_NUM) > 0
+        AND CLASS_EDATE > NOW()
+    </select>
+    
+    <!-- OPER_NUM 중복 체크 -->
+    <select id="chkDuple" resultType="int">
+        SELECT COUNT((SELECT MEMBER_ID
+                FROM operator
+                WHERE CLASS_NUM = #{classNum}
+                AND MEMBER_ID = #{memberId}
+                AND IS_PAY = 'Y'
+                AND O.OPER_NUM = operator.OPER_NUM)) AS OPER_NUM_CNT
+        FROM operator O
+    </select>
+    <!-- 결제 실패 시 insert한 operator 삭제쿼리 -->
+    <delete id="deleteOperator">
+        DELETE FROM OPERATOR
+        WHERE MEMBER_ID = #{memberId}
+        AND CLASS_NUM = #{classNum}
+    </delete>
+
+    <!-- OPER_NUM 삭제 공란 없애기 -->
+    <select id="selectOperNum" resultType="int">
+        SELECT IFNULL(MAX(OPER_NUM), 0) + 1
+        FROM OPERATOR
+    </select>
+
+    <!-- 매출 발생 연도 검색 쿼리 -->
+    <select id="findPayYear" resultMap="operator">
+        SELECT SUBSTRING(PAY_DAY, 1, 4) AS PAY_YEAR
+        FROM OPERATOR
+        GROUP BY SUBSTRING(PAY_DAY, 1, 4)
+        ORDER BY SUBSTRING(PAY_DAY, 1, 4) DESC
+    </select>
+
+    <!-- 월별 매출 (그래프용)-->
+    <select id="monthlySales" resultMap="operator">
+        SELECT SUM(OPER_PAY) AS TOTAL_SALES
+            , SUBSTRING(PAY_DAY, 6, 2) AS PAY_MONTH
+            , SUBSTRING(PAY_DAY, 1, 4) AS PAY_YEAR
+            , COUNT(OPER_NUM) AS OPER_NUM_CNT
+        FROM operator
+        WHERE SUBSTRING(PAY_DAY, 1, 4) = #{payYear}
+        GROUP BY SUBSTRING(PAY_DAY, 1, 7)
+        ORDER BY PAY_DAY ASC
+    </select>
+
+    <!-- 매출 검색 -->
+    <select id="searchSales" resultMap="operator">
+        SELECT SUM(OPER_PAY) AS TOTAL_SALES
+            , SUBSTRING(PAY_DAY, 6, 2) AS PAY_MONTH
+            , SUBSTRING(PAY_DAY, 1, 4) AS PAY_YEAR
+            , SUBSTRING(PAY_DAY, 9, 2) AS PAY_DAY
+            , COUNT(OPER_NUM) AS OPER_NUM_CNT
+        FROM OPERATOR
+        WHERE PAY_DAY BETWEEN #{searchType} AND #{searchValue}
+        GROUP BY SUBSTRING(PAY_DAY, 1, 10)
+        ORDER BY PAY_DAY ASC
+    </select>
+    
+    <!-- class_info 데이터 수 -->
+    <select id="classInfoCnt" resultType="int">
+        SELECT COUNT(CLASS_NUM)
+        FROM CLASS_INFO
+        WHERE CLASS_EDATE > NOW()
+    </select>
+
+    <!-- member 데이터 수 -->
+    <select id="memberCnt" resultType="int">
+        SELECT COUNT(MEMBER_ID)
+        FROM MEMBER
+        <if test="searchType != null and !searchType.equals('')">
+            WHERE MEMBER_ROLL = ${searchType}
+        </if>
+    </select>
+
+    <!-- 선생님 총 인원 수 -->
+    <select id="teacherCnt" resultType="int">
+        SELECT COUNT(TEACHER_NUM)
+        FROM TEACHER
+    </select>
+
+    <!-- updateRoll 진행 시 실행되는 쿼리 -->
+    <select id="selectMemberInfo" resultMap="member.memberMap">
+        SELECT MEMBER_ID
+            , MEMBER_ROLL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <!--  boardType 게시판 관리 리스트  -->
+    <select id="findBoardTypes" resultMap="board.boardTypeMap">
+        SELECT TYPE_NUM
+            , TYPE_NAME
+        FROM BOARD_TYPE
+        ORDER BY TYPE_NUM ASC
+    </select>
+
+    <!-- boardType 게시판 테이블 데이터 입력 -->
+    <insert id="setBoardType">
+        INSERT INTO BOARD_TYPE (
+            TYPE_NUM
+            , TYPE_NAME
+        ) VALUES (
+            #{typeNum}
+            , #{typeName}
+        )
+    </insert>
+
+    <!-- boardType 테이블 가장 큰 typeNum 찾기 -->
+    <select id="findMaxTypeNum" resultType="int">
+        SELECT IFNULL(MAX(TYPE_NUM), 0) + 1
+        FROM BOARD_TYPE
+    </select>
+
+    <!-- boardType 게시판 분류 수정 -->
+    <update id="regBoardType">
+        UPDATE BOARD_TYPE
+        SET TYPE_NAME = #{typeName}
+        WHERE TYPE_NUM = #{typeNum}
+    </update>
+
+    <!-- boardType 게시판 분류 삭제 -->
+    <delete id="delBoardType">
+        DELETE FROM BOARD_TYPE
+        WHERE TYPE_NUM = #{typeNum}
+    </delete>
+</mapper>

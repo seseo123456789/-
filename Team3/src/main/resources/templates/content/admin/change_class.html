@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <link rel="stylesheet" href="/css/content/admin/change_class.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성 -->
+    <div class="row">
+        <div class="col">
+            <div class="row mb-2">
+                <div class="col">
+                    <h2 class="title-div">[[${clsInfo.className}]]반 상세 정보</h2>
+                </div>
+            </div>
+
+            <form action="/admin/updateClass" method="post">
+                <div class="row">
+                    <div class="col">
+                        <input type="hidden" name="classNum" th:value="${clsInfo.classNum}">
+                        <input type="hidden" class="updateMemberId-tag" name="updateMemberId" th:value="${updateMemberId}">
+                        <table class="table table-bordered text-center align-middle mb-3 border-success tbl-div">
+                            <colgroup>
+                                <col width="20%">
+                                <col width="30%">
+                                <col width="20%">
+                                <col width="30%">
+                            </colgroup>
+                            <tr>
+                                <td class="table-success border-success">반 이름</td>
+                                <td class="select-className">
+                                    <input class="input-tag" type="text" name="className" th:value="${clsInfo.className}">
+                                </td>
+                                <td class="table-success border-success">수강료</td>
+                                <td class="select-classPayment">
+                                    <input class="input-tag" type="number" name="classPayment" th:value="${clsInfo.classPayment}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-success border-success">담당 강사</td>
+                                <td class="select-teacherName ">
+                                    <select name="teacherNum " class="form-select">
+                                        <option  th:each="teacher : ${teachers}" th:value="${teacher.teacherNum}">[[${teacher.memberVO.memberName}]]</option>
+                                    </select>
+                                </td>
+                                <td class="table-success border-success">상태</td>
+                                <td>
+                                    <input class="input-tag" type="text" name="strEnter" th:value="${clsInfo.strEnter}" disabled>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-success border-success">시작일</td>
+                                <td class="select-date">
+                                    <input class="input-tag" type="date" name="classSdate" th:value="${clsInfo.classSdate}">
+                                </td>
+                                <td class="table-success border-success">종료일</td>
+                                <td>
+                                    <input class="input-tag" type="date" name="classEdate" th:value="${clsInfo.classEdate}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-success border-success">현 인원</td>
+                                <td class="select-personnel">
+                                    <input class="input-tag" type="number" name="stuCnt" th:value="${clsInfo.stuCnt}" disabled>
+                                </td>
+                                <td class="table-success border-success">정원</td>
+                                <td class="select-personnel">
+                                    <input class="input-tag" type="number" name="classPersonnel" th:value="${clsInfo.classPersonnel}">
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="row mb-3">
+                            <div class="col-1 d-grid btn-div">
+                                <input class="btn btn-outline-success" type="submit" value="수정">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col the-line">
+
+                            </div>
+                        </div>
+                        <th:block th:if="${!#lists.isEmpty(students)}">
+                            <div class="row text-center" >
+                                <div class="col" >
+
+                                    <h3>수강 중인 학생 목록</h3>
+                                    <div class="row mt-3">
+                                        <div class="col table-div">
+                                            <table class="table align-middle text-center table-bordered border-success">
+                                                <colgroup>
+                                                    <col width="80%">
+                                                    <col width="20%">
+                                                </colgroup>
+                                                <thead class="table-success border-success">
+                                                    <tr>
+                                                        <td>이름</td>
+                                                        <td>변경</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="stu : ${students}" class="table-hover">
+                                                        <td>[[${stu.memberName}]]</td>
+                                                        <td>
+                                                            <input class="btn btn-outline-success btn-button" type="button" th:onclick="detailMember([[${stu.memberId}]])" value="수정">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:unless="${!#lists.isEmpty(students)}">
+                            <div class="row text-center">
+                                <div class="col">
+                                    <h4>현재 [[${clsInfo.className}]]에서 수강 중인 학생이 없습니다.</h4>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+<!-- 인적사항 Modal -->
+<div class="modal fade modal-lg" id="detail-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">회원 정보</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/admin/editPersonInfo" method="post" class="changePersonalInfo">
+                <input type="hidden" name="classNum" th:value="${clsInfo.classNum}">
+                <div class="row">
+                    <div class="col">
+                        <div class="row" >
+                            <div class="col" id="table-head">
+                                <table class="table align-middle text-center">
+                                    <colgroup>
+                                        <col width="15%">
+                                        <col width="35%">
+                                        <col width="15%">
+                                        <col width="35%">
+                                    </colgroup>
+                                    <tbody class="tbody-tag">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-10"></div>
+                            <div class="col-2 d-grid">
+                                <input type="button" value="변경" class="btn btn-primary" onclick="updateMemberInfo()">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</th:block>
+
+    
+    
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <script src="/js/content/admin/change_class.js"></script>
+</th:block>
+</html>

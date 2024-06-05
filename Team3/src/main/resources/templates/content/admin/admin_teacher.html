@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}">
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <link rel="stylesheet" href="/css/content/admin/admin_teacher.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+
+    <!-- html 코드 작성 -->
+    <div class="row">
+        <div class="col">
+            
+            <div class="row mb-2">
+                <div class="col">
+                    <h2 class="title-div">근태관리</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+
+                    <div class="row" style="padding-top: 8px;">
+                        <div class="col-5" style="height: 415px; border-right:2px solid #25ac302f; position: relative; ">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <h5>직원 목록</h5>
+                                    <input type="hidden" th:value="${updateTeacherNum}" id="updateTeacherNum">
+                                </div>
+                            </div>
+                            <div class="row mb-2" >
+                                <div class="col">
+                                    <span class="text-end span-div"> * 총 [[${teacherCnt}]]명의 직원이 있습니다.</span>
+                                </div>
+                            </div>
+                            <div class="row" style="width: 450px">
+                                <div class="col">
+                                    <table class="table text-center">
+                                        <colgroup>
+                                            <col width="20%">
+                                            <col width="20%">
+                                            <col width="30%">
+                                            <col width="30%">
+                                        </colgroup>
+                                        <thead class="table-success">
+                                            <tr>
+                                                <td>No</td>
+                                                <td>이름</td>
+                                                <td>근무일</td>
+                                                <td>근무현황</td>
+                                            </tr>
+                                        </thead> 
+                                        
+                                        <tbody th:if="${#lists.isEmpty(teacherList)}">
+                                            <tr>
+                                                <td colspan="4">근무 중인 강사가 없습니다.</td>
+                                            </tr>
+                                        </tbody>         
+                                        <tbody th:unless="${#lists.isEmpty(teacherList)}">
+                                            <tr class="pointer-span" th:each="teacher, state : ${teacherList}" th:onclick="teacherInfo([[${teacher.teacherNum}]])">
+                                                <td>[[${searchVO.totalDataCnt - (searchVO.displayDataCnt * (searchVO.nowPage - 1)) - state.index}]]</td>
+                                                <td>[[${teacher.memberVO.memberName}]]</td>
+                                                <td>[[${teacher.memberVO.regDate}]]</td>
+                                                <td>[[${teacher.strWork}]]</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- 페이징 코드 -->
+                            <div class="row">
+                                <div class="col-5"></div>
+                                <div class="col">
+                                    <nav aria-label="Page navigation example" class="nav-btn" style="position: absolute; top: 90%; left: 42%;">
+                                        <ul class="pagination">
+                                            <th:block th:if="${searchVO.prev}">
+                                                <li class="page-item">
+                                                    <a class="page-link" th:href="@{/admin/goAdminTeacher(nowPage=${searchVO.beginPage - 1})}"  aria-label="Previous" style="color: rgb(116, 116, 116)">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
+                                            </th:block>
+                                            <th:block th:each="i : ${#numbers.sequence(searchVO.beginPage, searchVO.endPage)}"> 
+                                                <!-- 공지사항 목록에서 선택한 페이지 + 조회한 검색 데이터 함께 가져옴 -->   
+                                                <li class="page-item">
+                                                    <a class="page-link" th:href="@{/admin/goAdminTeacher(nowPage=${i})}" style="color: rgb(116, 116, 116)">
+                                                        [[${i}]]
+                                                    </a>
+                                                </li>
+                                            </th:block>
+                                            <th:block th:if="${searchVO.next}">
+                                                <li class="page-item">
+                                                    <a class="page-link" th:href="@{/admin/goAdminTeacher(nowPage=${searchVO.endPage + 1})}" aria-label="Next" style="color: rgb(116, 116, 116)">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
+                                            </th:block>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            
+        
+        
+                        </div>
+                        <div class="col-7">
+                            <div class="row">
+                                <div class="col">
+                                    <h5>강사 상세 정보</h5>
+                                </di>
+                            </div>
+                            <div class="row">
+                                <div class="col teacher-list-div">
+                                    <!-- <form action=""> -->
+                                        <div class="row">
+                                            <div class="col-2 text-center"></div>
+                                            <div class="col-8" >
+                                                <input class="form-control teacher-name" type="text" name="memberName" style="width: 180px; margin-left: 220px;" placeholder="강사명을 입력하세요.">
+                                            </div>
+                                            <div class="col-1">
+                                                <input type="button" class="btn btn-success d-grid" value="검색" onclick="findTeacher()">
+                                            </div>
+                                            <div class="col-1"></div>
+                                        </div>
+                                        <div class="row mt-2" style="padding-top: 2px;">
+                                            <div class="col table-col-div">
+                                                <table class="table align-middle text-center">
+                                                    <colgroup>
+                                                        <col width="20%"/>
+                                                        <col width="20%"/>
+                                                        <col width="30%"/>
+                                                        <col width="30%"/>
+                                                    </colgroup>
+                                                    <thead class="table-success">
+                                                        <tr>
+                                                            <td>No</td>
+                                                            <td>반 이름</td>
+                                                            <td>인원수</td>
+                                                            <td>강의 상태</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="4" style="color: gray;">선생님을 선택하세요.</td>
+                                                        </tr>
+                                                    </tbody>
+                            
+                                                </table>
+                                            </div>
+                                        </div>
+        
+                                    <!-- </form> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+    </div>
+</div>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <script src="/js/content/admin/admin_teacher.js"></script>
+</th:block>
+
+</html>

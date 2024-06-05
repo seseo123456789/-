@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <!-- <link rel="stylesheet" href="/"> -->
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+
+
+<style>
+    td ,th, tr{border: 1px solid rgba(22, 121, 55, 0.438); border-collapse: collapse; }
+    th{--bs-table-bg:  #36ad6442; text-align: center;}
+</style>
+    <!-- html 코드 작성-->
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div class="row" style="width:700px; margin-left: 1px;">
+                        <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                            <h3><strong>나의 개인정보</strong></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col">
+                    <table class="table" style="height: 200px; border: 3px solid rgba(22, 121, 55, 0.438);">
+                        <colgroup>
+                            <col width="16%">
+                            <col width="29%">
+                            <col width="16%">
+                            <col width="*%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>이름</th>
+                                <td>[[${memberVO.memberName}]]</td>
+                                <th>아이디</th>
+                                <td>[[${memberVO.memberId}]]</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td id="memTel">[[${memberVO.memberTel}]]</td>
+                                <th>이메일</th>
+                                <td id="memEmail">[[${memberVO.memberEmail}]]</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td colspan="3">[[${memberVO.memberAddr}]]</td>
+                            </tr>
+                            <tr>
+                                <th>상세 주소</th>
+                                <td colspan="3">[[${memberVO.addrDetail}]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="row mb-2" id="passwordInput">
+                <div class="col-2">
+                    <input type="button" value="개인정보 변경" class="btn btn-outline-secondary" onclick="passwordInput()">
+                
+                </div>
+                <div class="col-9">
+            
+                </div>
+            </div>
+        </div>
+        <div class="col-4" id="passwordChanger">
+            
+        </div>
+    </div>
+
+
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    <script src="/js/member/myInformation.js"></script>
+</th:block>
+</html>

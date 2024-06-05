@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴 때 같이 실행 되는 css -->
+    <link rel="stylesheet" href="/">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성-->
+    <form action="">
+        <div class="row">
+            <div class="col">
+            
+                <div class="row" >
+                    <div class="col" style="color: white; padding-top: 6px; padding-bottom: 1px; background-color:#0a1657; border-bottom: 8px solid #25ac30;">
+                        <h3><strong>출결 관리</strong></h3>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-7" id="today">
+                        <input type="date" class="form-control" id="currentDate" readonly style="display: inline-block; width: 49%; border: 1px solid rgb(23, 141, 156);">
+                        <select name="classNum" id="class_select" onchange="change()" class="form-select" style="display: inline-block; width: 49%; border: 1px solid rgb(23, 141, 156);">
+                            <th:block th:each="class:${classList}">
+                                <option th:value="${class.classNum}">[[${class.className}]]</option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="col-5" style="text-align: center; border: 3px solid green; border-bottom: none;vertical-align: middle; padding-top: 10px;">
+                        <h5><strong>출석 현황</strong></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <table id="stu_select" class="table" style="text-align: center; vertical-align: middle;">
+                            
+                        </table>
+                    </div>
+                    <div class="col-5" id="fullAttendance" style="text-align: center; border-collapse: collapse; border: 3px solid green;">
+                        <table class="table">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="25%">
+                                <col width="13%">
+                                <col width="13%">
+                                <col width="13%">
+                                <col width="13%">
+                                <col width="13%">
+                            </colgroup>
+                            <thead>
+                                <tr style="border-bottom: 1px solid green;">
+                                    <th>No</th>
+                                    <th style="border-right: 1px solid green;">이름</th>
+                                    <th>출석</th>
+                                    <th>결석</th>
+                                    <th>지각</th>
+                                    <th>조퇴</th>
+                                    <th>보강</th>
+                                </tr>
+                            </thead>
+                            <tbody id="showAttendanceList">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴 때 같이 실행 되는 js-->
+    <script src="/js/teacher/attendance.js"></script>
+</th:block>
+</html>

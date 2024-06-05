@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="learnMapper">
+    <resultMap id="attendanceType" type="com.green.Team3.learn.vo.AttendanceTypeVO">
+        <id     column="ATDT_NUM"   property="atdtNum"/>
+        <result column="ATDT_NAME"  property="atdtName"/>
+    </resultMap>
+    <resultMap id="homework" type="com.green.Team3.learn.vo.HomeworkVO">
+        <id     column="HW_NUM"     property="hwNum"/>
+        <result column="HW_NAME"    property="hwName"/>
+        <result column="HW_SDATE"   property="hwSdate"/>
+        <result column="HW_EDATE"   property="hwEdate"/>
+        <result column="CLASS_NUM"  property="classNum"/>
+        <association property="clsVO" resultMap="clsMapper.cls"/>
+    </resultMap>
+    <resultMap id="consult" type="com.green.Team3.learn.vo.ConsultVO">
+        <id column="CONSULT_NUM" property="consultNum"/>
+        <result column="CONSULT_CONTENT" property="consultContent"/>
+        <result column="CONSULT_DATE" property="consultDate"/>
+        <result column="MEMBER_ID" property="memberId"/>
+        <result column="CLASS_NUM" property="classNum"/>
+        <association property="clsVO" resultMap="clsMapper.cls"/>
+        <association property="memberVO" resultMap="member.memberMap"/>
+    </resultMap>
+    <resultMap id="attendance" type="com.green.Team3.learn.vo.AttendanceVO">
+        <id     column="ATD_NUM" property="atdNum"/>
+        <result column="MEMBER_ID" property="memberId"/>
+        <result column="ATD_DATE" property="atdDate"/>
+        <result column="ATDT_NUM" property="atdtNum"/>
+        <result column="CLASS_NUM" property="classNum"/>
+    </resultMap>
+
+
+    <!-- 출결 리스트 조회 -->
+    <select id="selectAtd" resultMap="attendanceType">
+        SELECT  ATDT_NUM,
+                ATDT_NAME
+        FROM ATTENDANCE_TYPE
+        ORDER BY ATDT_NUM ASC
+    </select>
+    <!-- 과제 추가 테이블 -->
+    <insert id="homeworkAdd">
+        INSERT INTO HOMEWORK (
+        HW_NAME,
+        HW_SDATE,
+        HW_EDATE,
+        CLASS_NUM
+        ) VALUES (
+        #{hwName},
+        #{hwSdate},
+        #{hwEdate},
+        #{classNum}
+        );
+    </insert>
+    <!--  진행중인 숙제 조회  -->
+    <select id="selectIngHomework" resultMap="homework">
+        SELECT  HW_NUM,
+                HW_NAME,
+                HW_SDATE,
+                HW_EDATE,
+                H.CLASS_NUM,
+                CLASS_NAME
+        FROM HOMEWORK H
+        INNER JOIN CLASS_INFO CI
+        ON H.CLASS_NUM = CI.CLASS_NUM
+        INNER JOIN TEACHER T
+        ON T.TEACHER_NUM = CI.TEACHER_NUM
+        WHERE MEMBER_ID = #{memberId}
+        AND HW_EDATE > NOW()
+        AND NOW() > HW_SDATE
+        ORDER BY HW_EDATE ASC
+    </select>
+    <!--  예정된 숙제 조회  -->
+    <select id="selectWillHomework" resultMap="homework">
+        SELECT  HW_NUM,
+        HW_NAME,
+        HW_SDATE,
+        HW_EDATE,
+        H.CLASS_NUM,
+        CLASS_NAME
+        FROM HOMEWORK H
+        INNER JOIN CLASS_INFO CI
+        ON H.CLASS_NUM = CI.CLASS_NUM
+        INNER JOIN TEACHER T
+        ON T.TEACHER_NUM = CI.TEACHER_NUM
+        WHERE MEMBER_ID = #{memberId}
+        AND HW_SDATE > NOW()
+        ORDER BY HW_EDATE ASC
+    </select>
+    <!--  종료된 숙제 조회  -->
+    <select id="selectEndHomework" resultMap="homework">
+        SELECT  HW_NUM,
+                HW_NAME,
+                HW_SDATE,
+                HW_EDATE,
+                H.CLASS_NUM,
+                CLASS_NAME
+        FROM HOMEWORK H
+        INNER JOIN CLASS_INFO CI
+        ON H.CLASS_NUM = CI.CLASS_NUM
+        INNER JOIN TEACHER T
+        ON T.TEACHER_NUM = CI.TEACHER_NUM
+        WHERE MEMBER_ID = #{memberId}
+        AND NOW() > HW_EDATE
+        ORDER BY HW_EDATE ASC
+    </select>
+    <!--  선생으로 반정보 조회  -->
+    <select id="selectClassByThisTeacher" resultMap="clsMapper.cls">
+        SELECT CLASS_NAME, CLASS_NUM
+        FROM CLASS_INFO C
+        INNER JOIN TEACHER T
+        ON C.TEACHER_NUM = T.TEACHER_NUM
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+    <!--  과제 상세 조회  -->
+    <select id="selectOneHomework" resultMap="homework">
+        SELECT
+            C.CLASS_NUM,
+            CLASS_NAME,
+            HW_NAME,
+            HW_NUM,
+            HW_SDATE,
+            HW_EDATE
+        FROM HOMEWORK H
+        INNER JOIN CLASS_INFO C
+        ON C.CLASS_NUM = H.CLASS_NUM
+        WHERE HW_NUM = #{hwNum}
+    </select>
+    <!--  반으로 선생 조회  -->
+    <select id="selectTeacherNumByClassNum" resultType="int">
+        SELECT
+            TEACHER_NUM
+        FROM CLASS_INFO
+        WHERE CLASS_NUM = #{classNum}
+    </select>
+    <!--  선생 번호로 반 조회  -->
+    <select id="selectClassNumByTeacherNum" resultMap="homework">
+        SELECT DISTINCT
+        H.CLASS_NUM,CLASS_NAME
+        FROM homework H
+        INNER JOIN class_info CI
+        ON CI.CLASS_NUM = H.CLASS_NUM
+        WHERE TEACHER_NUM = #{teacherNum}
+    </select>
+    <!--  과제 수정  -->
+    <update id="updateHomework">
+        UPDATE HOMEWORK SET
+            HW_NAME = #{hwName},
+            HW_SDATE = #{hwSdate},
+            HW_EDATE = #{hwEdate},
+            CLASS_NUM = #{classNum}
+        WHERE HW_NUM = #{hwNum}
+    </update>
+    <!--  과제 삭제  -->
+    <delete id="deleteHomework">
+        DELETE FROM HOMEWORK
+        WHERE HW_NUM = #{hwNum}
+    </delete>
+    <!--  반에 소속된 학생 조회  -->
+    <select id="selectClassNumAndStuNum" resultMap="member.memberMap">
+        SELECT
+        M.MEMBER_ID,
+        MEMBER_NAME,
+        CLASS_NUM
+        FROM MEMBER M
+        INNER JOIN OPERATOR O
+        ON O.MEMBER_ID = M.MEMBER_ID
+        WHERE CLASS_NUM = #{class_num}
+    </select>
+    <!--  상담 일정 추가  -->
+    <insert id="insertConsult">
+        INSERT INTO CONSULT (
+            CLASS_NUM,
+            MEMBER_ID,
+            CONSULT_DATE
+        ) VALUES (
+            #{classNum},
+            #{memberId},
+            #{consultDate}
+        )
+    </insert>
+    <!--  종료된 상담 리스트 조회  -->
+    <select id="selectEndConsultList" resultMap="consult">
+        SELECT CONSULT_NUM,
+        CONSULT_DATE,
+        MEMBER_NAME,
+        CLASS_NAME,
+        CONSULT_CONTENT
+        FROM consult c
+        INNER JOIN class_info ci
+        ON ci.CLASS_NUM = c.CLASS_NUM
+        INNER JOIN member m
+        ON m.MEMBER_ID = c.MEMBER_ID
+        WHERE ci.TEACHER_NUM = #{teacherNum}
+        AND substring(NOW(),1,10) > consult_DATE
+        AND CONSULT_CONTENT IS NULL
+        ORDER BY CONSULT_DATE DESC
+    </select>
+    <!--  예정된 상담 리스트 조회  -->
+    <select id="selectWillConsultList" resultMap="consult">
+        SELECT CONSULT_NUM,
+        CONSULT_DATE,
+        MEMBER_NAME,
+        CLASS_NAME,
+        CONSULT_CONTENT
+        FROM consult c
+        INNER JOIN class_info ci
+        ON ci.CLASS_NUM = c.CLASS_NUM
+        INNER JOIN member m
+        ON m.MEMBER_ID = c.MEMBER_ID
+        WHERE ci.TEACHER_NUM = #{teacherNum}
+        AND consult_DATE > substring(NOW(),1,10)
+        ORDER BY CONSULT_DATE ASC
+    </select>
+    <!--  오늘 예정된 상담 리스트 조회  -->
+    <select id="selectTodayConsultList" resultMap="consult">
+        SELECT CONSULT_NUM,
+        CONSULT_DATE,
+        MEMBER_NAME,
+        CLASS_NAME,
+        CONSULT_CONTENT
+        FROM consult c
+        INNER JOIN class_info ci
+        ON ci.CLASS_NUM = c.CLASS_NUM
+        INNER JOIN member m
+        ON m.MEMBER_ID = c.MEMBER_ID
+        WHERE ci.TEACHER_NUM = #{teacherNum}
+        AND consult_DATE = substring(NOW(),1,10)
+        AND CONSULT_CONTENT IS NULL
+        ORDER BY CONSULT_DATE DESC
+    </select>
+    <!--  멤버 아이디로 선생 번호 조회  -->
+    <select id="selectTeacherNumOfMemberId" resultType="int">
+        SELECT TEACHER_NUM
+        FROM TEACHER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+    <!--  상담 상세 조회  -->
+    <select id="selectOneConsult" resultMap="consult">
+        SELECT
+        C.CLASS_NUM,
+        CLASS_NAME,
+        CONSULT_NUM,
+        CONSULT_DATE,
+        MEMBER_NAME
+        FROM CONSULT CS
+        INNER JOIN CLASS_INFO C
+        ON C.CLASS_NUM = CS.CLASS_NUM
+        INNER JOIN MEMBER M
+        ON M.MEMBER_ID = CS.MEMBER_ID
+        WHERE CONSULT_NUM = #{consultNum}
+    </select>
+    <!--  선생 번호로 반 조회(중복 데이터 한줄로 표시)  -->
+    <select id="selectClassNumByTeacherNumConsult" resultMap="consult">
+        SELECT DISTINCT
+        c.CLASS_NUM,CLASS_NAME
+        FROM consult c
+        INNER JOIN class_info CI
+        ON CI.CLASS_NUM = c.CLASS_NUM
+        WHERE TEACHER_NUM = #{teacherNum}
+    </select>
+    <!--  상담 수정  -->
+    <update id="updateConsult">
+        UPDATE consult SET
+        MEMBER_ID = #{memberId},
+        CONSULT_DATE = #{consultDate},
+        CLASS_NUM = #{classNum}
+        WHERE CONSULT_NUM = #{consultNum}
+    </update>
+    <!--  상담 삭제  -->
+    <delete id="deleteConsult">
+        DELETE FROM CONSULT
+        WHERE CONSULT_NUM = #{consultNum}
+    </delete>
+    <!--  상담 내용 작성  -->
+    <update id="addConsultContent">
+        UPDATE CONSULT SET
+        CONSULT_CONTENT = #{consultContent}
+        WHERE CONSULT_NUM = #{consultNum}
+    </update>
+    <!--  완료된 상담 조회  -->
+    <select id="contentComplete" resultMap="consult">
+        SELECT CONSULT_NUM,
+        CONSULT_DATE,
+        MEMBER_NAME,
+        CLASS_NAME,
+        CONSULT_CONTENT
+        FROM consult c
+        INNER JOIN class_info ci
+        ON ci.CLASS_NUM = c.CLASS_NUM
+        INNER JOIN member m
+        ON m.MEMBER_ID = c.MEMBER_ID
+        WHERE ci.TEACHER_NUM = #{teacherNum}
+        AND CONSULT_CONTENT IS NOT NULL
+        ORDER BY CONSULT_DATE DESC
+    </select>
+    <!--  3년이 지난 상담 자동 삭제  -->
+    <delete id="autoDeleteConsult">
+        DELETE FROM consult
+        WHERE DATE_SUB(NOW(), INTERVAL 3 YEAR) >= CONSULT_DATE
+    </delete>
+    <!--  출석 저장  -->
+    <insert id="insertAttendance">
+        INSERT INTO ATTENDANCE (
+            MEMBER_ID,
+            ATD_DATE,
+            ATDT_NUM,
+            CLASS_NUM
+        ) VALUES
+        <foreach collection="atdList" item="attendanceVO" separator=",">
+        (
+            #{attendanceVO.memberId},
+            #{attendanceVO.atdDate},
+            #{attendanceVO.atdtNum},
+            #{attendanceVO.classNum}
+        )
+        </foreach>
+    </insert>
+    <!--  해당 반의 학생 출석현황 조회  -->
+    <select id="fullAttendance" resultMap="member.memberMap">
+        SELECT MEMBER_NAME
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 1 AND member_id = m.member_id AND CLASS_NUM = #{classNum}) 'check'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 2 AND member_id = m.member_id AND CLASS_NUM = #{classNum}) 'absent'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 3 AND member_id = m.member_id AND CLASS_NUM = #{classNum}) 'tardy'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 4 AND member_id = m.member_id AND CLASS_NUM = #{classNum}) 'early'
+        ,(SELECT COUNT(*) FROM attendance WHERE atdt_num = 5 AND member_id = m.member_id AND CLASS_NUM = #{classNum}) 'supple'
+        from member m
+        INNER JOIN operator o
+        ON m.member_id = o.MEMBER_ID
+        WHERE class_num = #{classNum}
+    </select>
+    <!--  오늘 출석 체크를 하였는지 확인  -->
+    <select id="nowCheckAttendance" resultType="String">
+        SELECT IF((SELECT COUNT(ATD_NUM) FROM attendance
+        WHERE atd_date = substring(NOW(),1,10)
+        AND class_num = #{classNum}
+        GROUP BY atd_date),'true','false')
+    </select>
+    <!--  반복횟수를 위해 조회  -->
+    <select id="selectLoopCnt" resultType="int">
+        SELECT COUNT(CLASS_NUM) FROM class_info
+        WHERE TEACHER_NUM = #{teacherNum}
+    </select>
+
+    <!--  해당 반의 총 일수 계산  -->
+    <select id="selectTotalDayForClass" resultType="int">
+        SELECT DATEDIFF(CLASS_EDATE,CLASS_SDATE) FROM class_info
+        WHERE TEACHER_NUM = #{teacherNum}
+    </select>
+    <!--  해당 반의 진행 일수 계산  -->
+    <select id="selectIngDayForClass" resultType="int">
+        SELECT DATEDIFF(NOW(),CLASS_SDATE) FROM class_info
+        WHERE TEACHER_NUM = #{teacherNum}
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

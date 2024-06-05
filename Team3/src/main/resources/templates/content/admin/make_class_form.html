@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{fragment/integrated_layout}" >
+
+<th:block layout:fragment="content_css">
+    <!-- html 파일이 열릴때 같이 실행되는 css -->
+    <link rel="stylesheet" href="/css/content/admin/make_class_form.css">
+</th:block>
+
+<th:block layout:fragment="contentFragment">
+    <!-- html 코드 작성 -->
+    <div class="row">
+        <div class="col">
+            <form action="/admin/makeClass" method="post">
+                <div class="row">
+                    <div class="col">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <h2 class=" title-div">학급생성</h2>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 70%; text-align: center;" >
+                            <div class="col">
+                                <table class="table align-middle table-bordered border-success" style="height: 200px; width: 80%; margin-left: 10%;">
+                                    <colgroup>
+                                        <col width="20%">
+                                        <col width="25%">
+                                        <col width="20%">
+                                        <col width="25%">
+                                    </colgroup>
+                                    <tr>
+                                        <td class="td-point">반이름</td>
+                                        <td colspan="3">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <input type="text" name="className" class="form-control2" placeholder="반명을 입력하세요.">
+                                                </div>
+                                                <div class="col-8"></div>
+                                            </div>
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-point">수강료</td>
+                                        <td colspan="3">
+                                            <div class="row">
+                                                <div class="col-4"><input type="number" name="classPayment" class="form-control2" placeholder="예 200,000"></div>
+                                                <div class="col-8"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-point">정원</td>
+                                        <td colspan="3">
+                                            <div class="row">
+                                                <div class="col-4"><input type="number" min="0" max="20" name="classPersonnel" placeholder="최대 20명" class="form-control2"></div>
+                                                <div class="col-8"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-point">시작일</td>
+                                        <td style="width: 280px;">
+                                            <input type="date" name="classSdate" class="form-control2">
+                                        </td>
+                                        <td class="td-point">종료일</td>
+                                        <td><input type="date" name="classEdate" class="form-control2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-point">담당 강사</td>
+                                        <td colspan="3">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <select name="teacherNum" class="form-select">
+                                                        <option  th:each="teacher : ${teachers}" th:value="${teacher.teacherNum}">[[${teacher.memberVO.memberName}]]</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8"></div>
+                                            </div> 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-grid" style="margin-bottom: 20px;">
+                                <input type="hidden" value="3" name="accorNum">
+                                <input type="submit" class="btn btn-outline-success" value="생성" style="width: 10%; margin-left: 80%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col">
+                    <table class="table text-center align-middle">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="20%">
+                            <col width="20%">
+                        </colgroup>
+                        <thead class="table-success">
+                            <tr>
+                                <td>No.</td>
+                                <td>반 이름</td>
+                                <td>정원수</td>
+                                <td>담당 강사</td>
+                                <td>상세보기</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(clsList)}">
+                                <td colspan="5">조회된 반 정보가 없습니다.</td> 
+                            </tr>
+                            <tr th:unless="${#lists.isEmpty(clsList)}" th:each="cls, state : ${clsList}">
+                                <td>[[${searchVO.totalDataCnt -(searchVO.displayDataCnt * (searchVO.nowPage - 1)) - state.index}]]</td>
+                                <td>[[${cls.className}]]</td>
+                                <td>[[${cls.classPersonnel}]]</td>
+                                <td>[[${cls.teacherVO.memberVO.memberName}]]</td>
+                                <td>
+                                    <input class="btn btn-outline-success" type="button" value="상세보기" th:onclick="changeClsInfo([[${cls.classNum}]])">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 페이징 코드 -->
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <th:block th:if="${searchVO.prev}">
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/admin/makeClassForm(nowPage=${searchVO.beginPage - 1})}"  aria-label="Previous" style="color: rgb(116, 116, 116)">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            </th:block>
+                            <th:block th:each="i : ${#numbers.sequence(searchVO.beginPage, searchVO.endPage)}"> 
+                                <!-- 공지사항 목록에서 선택한 페이지 + 조회한 검색 데이터 함께 가져옴 -->   
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/admin/makeClassForm(nowPage=${i})}" style="color: rgb(116, 116, 116)">
+                                        [[${i}]]
+                                    </a>
+                                </li>
+                            </th:block>
+                            <th:block th:if="${searchVO.next}">
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/admin/makeClassForm(nowPage=${searchVO.endPage + 1})}" aria-label="Next" style="color: rgb(116, 116, 116)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content_js">
+    <!-- html 파일이 열릴때 같이 실행되는 js -->
+    <script src="/js/content/admin/make_class_form.js"></script>
+</th:block>
+</html>

@@ -1,0 +1,28 @@
+.pointer-span:hover{
+    cursor: pointer;
+}
+body {
+    font-family: 'Pretendard-Regular';
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+/* 각 content 페이지 별 제목 디자인 파트 h2에 클래스명 생성 시 디자인됨 */
+.title-div{
+    color: white;
+    padding-top: 6px;
+    padding-bottom: 1px;
+    background-color: #0a1657;
+    border-bottom: 6px solid #25ac30;
+    font-weight: bold;
+    padding-left: 10px;
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 해당 파일에 모든 쿼리문을 작성 -->
+<mapper namespace="reply">
+    <resultMap id="replyMap" type="com.green.Team3.board.vo.ReplyVO">
+        <id column="REPLY_NUM"                   property="replyNum"/>
+        <result column="REPLY_CONTENT"           property="replyContent"/>
+        <result column="REPLY_CREATE_DATE"       property="replyCreateDate"/>
+        <result column="MEMBER_ID"               property="memberId"/>
+        <result column="BOARD_NUM"               property="boardNum"/>
+    </resultMap>
+
+<!--  [ 문의사항 댓글 관련 ]  -->
+
+    <!-- 댓글 작성 -->
+    <insert id="insertReply">
+        INSERT INTO BOARD_REPLY (
+            REPLY_CONTENT
+            , MEMBER_ID
+            , BOARD_NUM
+        ) VALUES (
+            #{replyContent}
+            , #{memberId}
+            , #{boardNum}
+        )
+    </insert>
+
+    <!-- 댓글 조회 -->
+    <select id="selectReplyList" resultMap="replyMap">
+        SELECT MEMBER_ID
+            , REPLY_CREATE_DATE
+            , REPLY_CONTENT
+            , REPLY_NUM
+        FROM BOARD_REPLY
+        WHERE BOARD_NUM = #{boardNum}
+    </select>
+
+    <!-- 댓글 삭제 -->
+    <delete id="deleteReply">
+        DELETE FROM BOARD_REPLY
+        WHERE REPLY_NUM = #{replyNum}
+    </delete>
+
+    <!-- 댓글 수정 -->
+    <update id="updateReply">
+        UPDATE BOARD_REPLY
+        SET
+            REPLY_CONTENT = #{replyContent}
+        WHERE REPLY_NUM = #{replyNum}
+    </update>
+
+    <!-- 댓글 수정 시 댓글 창 선택 -->
+    <select id="reSelect" resultType="STRING">
+        SELECT REPLY_CONTENT
+        FROM BOARD_REPLY
+        WHERE REPLY_NUM = #{replyNum}
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
