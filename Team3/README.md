@@ -4,12 +4,12 @@ Spring Team Project
 
 🖥️프로젝트 소개
 ===
-- 직관적인 UI 디자인으로 조작이 간단하고 행정·원생 관리를 통합한 프로젝트임
-- 운영관리, 학습관리, 회원관리 및 기타기능으로 분류하여 통합된 시스템으로 학원을 관리하고자 함
+- 직관적인 UI 디자인으로 조작이 간단하고 행정·원생 관리를 통합한 시스템.
+- 운영관리, 학습관리, 회원관리 및 기타기능으로 분류하여 학원관리를 위한 통합된 시스템.
 
 ⏲️개발 기간
 ===
-2024-02-23 ~ 2024-04-30
+2024-02-23 ~ 2024-04-30 (3개월)
 
 🧰개발 환경
 ===
@@ -30,9 +30,9 @@ Spring Team Project
 
 👨‍👩‍👧‍👧팀 구성
 ===
-|서지우|이송민|👑정민재|홍은지|
+|서지우|이⚪민|정⚪재|홍⚪지|
 |:---:|:---:|:---:|:---:|
-|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|
+<!-- |<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>| -->
 
 
 🧮 구현 기능
