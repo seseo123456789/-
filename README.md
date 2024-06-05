@@ -1,6 +1,8 @@
 '학원 학사관리 시스템' 팀프로젝트입니다. <br/>
 [성적관리] 구현을 담당하였습니다.
 
+Team3 ➡️ README 프로젝트 정보 확인가능😊
+
 제가 구현한 기능을 보실려면,
 
 Team3 ➡️ src ➡️ main ➡️ java/com/green/Team3 ➡️ test
