@@ -6,7 +6,7 @@
 
 Team3 ➡️ src ➡️ main ➡️ java/com/green/Team3 ➡️ test
 
-Team3 ➡️ src ➡️ main ➡️ java/com/green/Team3 ➡️ test
+Team3 ➡️ src ➡️ main ➡️ resources ➡️ test
 
 들어가시면, 작업한 코드를 보실 수 있습니다. 
 
