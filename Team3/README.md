@@ -1,17 +1,17 @@
-학원관리 시스템
+학원관리 학사 시스템
 ===
 Spring Team Project 
 
-🖥️프로젝트 소개
+## 🖥️프로젝트 소개
 ===
 - 직관적인 UI 디자인으로 조작이 간단하고 행정·원생 관리를 위한 시스템.
 - 운영관리, 학습관리, 회원관리 및 기타기능으로 분류하여 학원관리를 위한 시스템.
 
-⏲️개발 기간
+## ⏲️개발 기간
 ===
 2024-02-23 ~ 2024-04-30 (3개월)
 
-🧰개발 환경
+## 🧰개발 환경
 ===
 <div align=center>
   <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
@@ -28,14 +28,14 @@ Spring Team Project
   <img src="https://img.shields.io/badge/tippy.js-FF6666?style=for-the-badge&logo=''&logoColor=white">
 </div>
 
-👨‍👩‍👧‍👧팀 구성
+## 👨‍👩‍👧‍👧팀 구성
 ===
 |서지우|이⚪민|정⚪재|홍⚪지|
 |:---:|:---:|:---:|:---:|
 <!-- |<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>|<a href="https://github.com/JENGMINJAE"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"></a>| -->
 
 
-🧮 구현 기능
+## 🧮 구현 기능
 ===
 + 학습관리
   1. 성적 관리
